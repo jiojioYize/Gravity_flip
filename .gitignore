@@ -9,6 +9,9 @@
 /[Mm]emoryCaptures/
 /[Rr]ecordings/
 
+# Cursor (local IDE only)
+.cursor/
+
 # IDE / OS
 .vs/
 .gradle/
