@@ -30,23 +30,23 @@ Alternatively use a single `Walkable` layer for ground + ceiling if ground check
 
 ---
 
-## 2. Folder layout *(pending)*
+## 2. Folder layout *(partially complete)*
 
-In `Assets/` create:
+Current / planned layout in `Assets/`:
 
 ```
-Scenes/
-Scripts/Core/
-Scripts/Player/
-Scripts/Level/
-Scripts/UI/
-Scripts/Audio/
-Prefabs/
-Sprites/
-Audio/
+Scenes/           *(pending)*
+Scripts/Core/     `GravityController`
+Scripts/Player/   `PlayerController2D`
+Scripts/Level/    *(pending)*
+Scripts/UI/       *(pending)*
+Scripts/Audio/    *(pending)*
+Prefabs/          *(pending)*
+Sprites/          *(pending)*
+Audio/            *(pending)*
 ```
 
-Scripts will be added by development tasks; create folders when first script is added.
+Create pending folders when their first asset or script is added.
 
 ---
 
@@ -86,15 +86,21 @@ Align with [docs/GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 2:
 
 ---
 
-## 4. Player prefab *(pending — Week 1 D1–3)*
+## 4. Player prefab *(script ready — requires Unity binding)*
 
 1. Create empty `Player` GameObject
 2. Add `SpriteRenderer` (placeholder square sprite)
 3. Add `Rigidbody2D`: Dynamic, Freeze Rotation Z, Continuous collision
 4. Add `CapsuleCollider2D` or `BoxCollider2D`
-5. Add `PlayerController2D` script *(when created)*
-6. Wire references in Inspector per script tooltips
-7. Drag to `Assets/Prefabs/Player.prefab`
+5. Add `PlayerController2D` script
+6. Set `Walkable Layers` to include floor and ceiling layers (`Ground` + `Ceiling`, or a unified `Walkable` layer)
+7. Assign the scene `GravityController` reference, or leave it empty if there is only one `GravityController` in the scene
+8. Start with these tuning values, then adjust in Play Mode:
+   - Move Speed: `7`
+   - Jump Speed: `12`
+   - Custom Gravity: `28`
+   - Ground Check Distance: `0.08`
+9. Drag to `Assets/Prefabs/Player.prefab`
 
 ---
 
@@ -113,12 +119,14 @@ Align with [docs/GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 2:
 
 Empty GameObject `--- Managers ---` in scene with:
 
-- `GameManager`
 - `GravityController`
+- `GameManager` *(pending)*
 - `ProgressManager`
 - `AudioManager` *(when audio added)*
 
 Assign scene references (spawn point, door, HUD) in Inspector.
+
+`GravityController` has no required Inspector references for the first movement test. Keep `Initial Gravity Direction` as `(0, -1)`.
 
 ---
 

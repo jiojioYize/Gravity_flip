@@ -53,3 +53,15 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 **Alternatives considered:** GitHub Issues/Projects or a more complex project-management setup.
 
 **Result / follow-up:** Update `TESTLOG.md` for test sessions and bug fixes. Update this file for design and technical choices. Keep README and SETUP accurate as the project changes.
+
+---
+
+### 2026-05-24 — Apply custom gravity to the player Rigidbody
+
+**Decision:** Disable the player's built-in `Rigidbody2D.gravityScale` and apply gravity manually in `PlayerController2D` using the direction stored by `GravityController`.
+
+**Reason:** Unity's `Physics2D.gravity` is global. Changing it would affect every dynamic `Rigidbody2D` in the scene, but the design requires only the player gravity direction and player visual orientation to change. Manual player gravity keeps the world stable and makes the rule clear in code.
+
+**Alternatives considered:** Flipping global `Physics2D.gravity`, using negative `gravityScale`, or rotating the whole scene.
+
+**Result / follow-up:** The first implementation supports down/up gravity, screen-space left/right movement, grounded-only jumping, and visual inversion. Initial Unity Editor Play Mode verification passed for movement, grounded jump, no double jump, gravity flip to the ceiling, ceiling movement, inverted jump, and flipping back to normal gravity.
