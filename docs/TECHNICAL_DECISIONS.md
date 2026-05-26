@@ -65,3 +65,15 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 **Alternatives considered:** Flipping global `Physics2D.gravity`, using negative `gravityScale`, or rotating the whole scene.
 
 **Result / follow-up:** The first implementation supports down/up gravity, screen-space left/right movement, grounded-only jumping, and visual inversion. Initial Unity Editor Play Mode verification passed for movement, grounded jump, no double jump, gravity flip to the ceiling, ceiling movement, inverted jump, and flipping back to normal gravity.
+
+---
+
+### 2026-05-25 — Use simple scene managers for the first level loop
+
+**Decision:** Add `ProgressManager`, `GameManager`, `Collectible`, `ExitDoor`, and `KillZone` as small scene-level scripts instead of introducing a larger architecture or event framework.
+
+**Reason:** The current goal is a reliable vertical-slice loop: collect the required item, unlock the exit, complete the level, and reset cleanly after death. Small scene managers are easy to wire in Unity, easy to explain in the report, and appropriate for a one-level coursework project.
+
+**Alternatives considered:** A more generic objective system, ScriptableObject-driven level data, or a larger event bus.
+
+**Result / follow-up:** Initial Unity Editor Play Mode verification passed: exit stays locked until the collectable is collected, collectable pickup unlocks completion, touching the exit after collection logs level complete, kill-zone respawn returns the player to the spawn point, gravity resets to normal, and collectable state resets on death.

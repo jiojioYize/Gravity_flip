@@ -38,7 +38,7 @@ Current / planned layout in `Assets/`:
 Scenes/           *(pending)*
 Scripts/Core/     `GravityController`
 Scripts/Player/   `PlayerController2D`
-Scripts/Level/    *(pending)*
+Scripts/Level/    `Collectible`, `ExitDoor`, `KillZone`
 Scripts/UI/       *(pending)*
 Scripts/Audio/    *(pending)*
 Prefabs/          *(pending)*
@@ -115,22 +115,67 @@ Align with [docs/GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 2:
 
 ---
 
-## 6. Managers *(pending)*
+## 6. Managers *(core scripts ready — requires Unity binding)*
 
 Empty GameObject `--- Managers ---` in scene with:
 
 - `GravityController`
-- `GameManager` *(pending)*
+- `GameManager`
 - `ProgressManager`
 - `AudioManager` *(when audio added)*
 
-Assign scene references (spawn point, door, HUD) in Inspector.
+Create a `SpawnPoint` empty GameObject at the player's starting position.
+
+Assign `GameManager` references:
+
+- Player: the `Player` object with `PlayerController2D`
+- Spawn Point: the `SpawnPoint` object
+- Gravity Controller: the scene `GravityController`
+- Progress Manager: the scene `ProgressManager`
 
 `GravityController` has no required Inspector references for the first movement test. Keep `Initial Gravity Direction` as `(0, -1)`.
 
+`ProgressManager` has no required Inspector references. `Collectible` objects register themselves at runtime.
+
 ---
 
-## 7. Build settings *(pending — Week 2)*
+## 7. Collectable, exit, and death reset *(script ready — requires Unity binding)*
+
+### Collectable
+
+1. Create `2D Object > Sprites > Square` and name it `Collectable`
+2. Set a visible colour, such as yellow
+3. Add `BoxCollider2D`
+4. Add `Collectible` script
+5. Place it where the player must use gravity flip to reach it
+6. Leave `Progress Manager` empty if there is only one `ProgressManager` in the scene, or assign it manually
+
+The `Collectible` script sets its collider to trigger at runtime.
+
+### Exit door
+
+1. Create `2D Object > Sprites > Square` and name it `ExitDoor`
+2. Set its scale to look like a door, for example `(1, 2, 1)`
+3. Add `BoxCollider2D`
+4. Add `ExitDoor` script
+5. Assign `Progress Manager`, `Game Manager`, and `Sprite Renderer` references, or leave them empty if there is only one of each in the scene
+
+The door starts locked, changes colour when all collectables are collected, and calls `GameManager.CompleteLevel()` when the player reaches it.
+
+### Kill zone
+
+1. Create an empty GameObject named `KillZone`
+2. Add `BoxCollider2D`
+3. Set `Is Trigger` on the collider
+4. Add `KillZone` script
+5. Scale and place it below the level or near hazards
+6. Assign `Game Manager`, or leave it empty if there is only one `GameManager` in the scene
+
+When the player enters the kill zone, the player respawns, gravity resets to normal, and collectable progress resets.
+
+---
+
+## 8. Build settings *(pending — Week 2)*
 
 1. File → Build Settings
 2. Add `Level01` (and `MainMenu` if implemented) to Scenes In Build
@@ -140,7 +185,7 @@ Document build output path in README when first build is exported.
 
 ---
 
-## 8. Verification checklist
+## 9. Verification checklist
 
 Before marking Level01 “playable”, confirm:
 
@@ -150,5 +195,14 @@ Before marking Level01 “playable”, confirm:
 - [ ] HUD shows gravity state and progress
 - [ ] Death resets position, gravity, and progress
 - [ ] No tunneling through platforms at normal play speed
+
+For the current level-loop milestone, verify:
+
+- [ ] Collectable disappears when touched by the player
+- [ ] Exit remains locked before collecting all collectables
+- [ ] Exit completes the level after all collectables are collected
+- [ ] Kill zone respawns the player at `SpawnPoint`
+- [ ] Kill zone resets gravity to normal
+- [ ] Kill zone restores collectable progress
 
 Log results in [Assets/Documentation/TESTLOG.md](Assets/Documentation/TESTLOG.md).

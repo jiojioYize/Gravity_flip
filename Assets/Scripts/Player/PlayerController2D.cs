@@ -136,5 +136,14 @@ namespace GravityFlip.Player
 
             transform.localScale = new Vector3(initialScale.x, yScale, initialScale.z);
         }
+
+        public void ResetTo(Vector3 position)
+        {
+            body.position = position;
+            body.velocity = Vector2.zero;
+            body.angularVelocity = 0f;
+            jumpRequested = false;
+            horizontalInput = 0f;
+        }
     }
 }
