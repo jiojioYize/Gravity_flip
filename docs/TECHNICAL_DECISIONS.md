@@ -77,3 +77,15 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 **Alternatives considered:** A more generic objective system, ScriptableObject-driven level data, or a larger event bus.
 
 **Result / follow-up:** Initial Unity Editor Play Mode verification passed: exit stays locked until the collectable is collected, collectable pickup unlocks completion, touching the exit after collection logs level complete, kill-zone respawn returns the player to the spawn point, gravity resets to normal, and collectable state resets on death.
+
+---
+
+### 2026-05-26 — Use legacy UI Text for the gameplay HUD
+
+**Decision:** Implement `GameplayHUD` with Unity's built-in `UnityEngine.UI.Text` instead of TextMeshPro.
+
+**Reason:** The baseline HUD only needs three simple text fields (progress, gravity direction, and control hints). Legacy UI Text avoids adding another package, keeps setup simple in the Editor, and is sufficient for the coursework vertical slice.
+
+**Alternatives considered:** TextMeshPro for sharper text rendering.
+
+**Result / follow-up:** The HUD listens to `ProgressManager` and `GravityController` events. Initial Unity Editor Play Mode verification passed: progress and gravity labels update on collect, flip, and kill-zone respawn; control hints remain visible.

@@ -23,12 +23,14 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-05-25 | Editor scripts only | Added `ProgressManager`, `GameManager`, `Collectible`, `ExitDoor`, and `KillZone`; reviewed setup requirements | Not yet tested in Unity Play Mode because scene binding is required | Documented required Inspector setup and verification checklist in `SETUP.md` | Pending Play Mode test |
 | 2026-05-26 | Unity Editor Play Mode | Locked exit before collect, collectable pickup, level complete after collect, kill-zone respawn, gravity reset, collectable reset | No issues reported during manual verification | No code change required | Pass |
 | 2026-05-26 | Unity Editor Play Mode (`2f240ea`) | Level01 layout: collectable unreachable from ground-only path; reachable via ceiling route after gravity flip | No issues reported during manual verification | No code change required | Pass |
+| 2026-05-26 | Editor scripts only | Added `GameplayHUD` for progress, gravity direction, and control hints | Not yet tested in Unity Play Mode because canvas binding is required | Documented canvas setup in `SETUP.md` section 5 | Pending Play Mode test |
+| 2026-05-26 | Unity Editor Play Mode | HUD progress, gravity label, control hints; updates on collect, flip, and kill-zone respawn | No issues reported during manual verification | No code change required | Pass |
 
 ---
 
 ## Known issues (open)
 
-_None for the current collectable / exit / kill-zone test scope._
+_None for the current HUD test scope._
 
 ---
 
@@ -39,3 +41,4 @@ _Use this section for quick reference when writing the report._
 - Initial movement and gravity-flip implementation passed manual Unity Editor verification: left/right movement, grounded-only jump, gravity flip, ceiling movement, inverted jump, and return to normal gravity all worked as intended.
 - First level-loop implementation passed manual Unity Editor verification: exit locked until collectable collected, collectable disappears on pickup, level completes at exit, kill zone respawns player at spawn point, gravity resets to normal, and collectable progress resets.
 - Level01 reference puzzle layout verified: the collectable cannot be reached without using gravity flip; the ceiling route allows pickup and level completion.
+- Gameplay HUD passed manual Unity Editor verification: progress `Keys 0/1` → `1/1`, gravity Down/Up on flip, controls visible, reset after kill zone matches gameplay state.

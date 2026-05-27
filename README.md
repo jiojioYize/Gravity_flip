@@ -11,7 +11,8 @@ A 2D puzzle platformer where you flip your character's gravity — not the world
 | Item | Status |
 |------|--------|
 | Unity project skeleton | Done |
-| Game scripts | Started — player movement, gravity, collectable, exit, and reset foundation |
+| Game scripts | Started — movement, gravity, level loop, HUD script added |
+| HUD (in-game) | Done — progress, gravity direction, control hints |
 | Level 01 scene | Started — first movement test scene exists |
 | Playable build | Planned |
 

@@ -39,7 +39,7 @@ Scenes/           *(pending)*
 Scripts/Core/     `GravityController`
 Scripts/Player/   `PlayerController2D`
 Scripts/Level/    `Collectible`, `ExitDoor`, `KillZone`
-Scripts/UI/       *(pending)*
+Scripts/UI/       `GameplayHUD`
 Scripts/Audio/    *(pending)*
 Prefabs/          *(pending)*
 Sprites/          *(pending)*
@@ -104,14 +104,55 @@ Align with [docs/GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 2:
 
 ---
 
-## 5. UI canvas *(pending — Week 1 D5)*
+## 5. UI canvas *(implemented — bind if setting up a new scene)*
 
-1. GameObject → UI → Canvas (Screen Space Overlay)
-2. Add Text/TMP elements:
-   - Progress: `Keys 0/1` (top-left)
-   - Gravity indicator (top-right)
-   - Control hints (bottom)
-3. Add `GameplayHUD` script *(when created)* and assign UI references
+### Create canvas
+
+1. In `Hierarchy`, right-click → `UI` → `Canvas`
+2. Unity may auto-create `EventSystem`; keep it if present
+3. Select `Canvas`; in `Inspector` confirm **Render Mode** = `Screen Space - Overlay`
+
+### Progress text (top-left)
+
+1. Right-click `Canvas` → `UI` → `Text`
+2. Rename to `ProgressText`
+3. Set **Anchor Preset**: top-left (hold `Alt` + click top-left preset)
+4. Set **Pos X** `20`, **Pos Y** `-20`
+5. Set **Text** to `Keys 0/1` (placeholder)
+6. Set **Font Size** `24`, **Color** white (or readable on your background)
+
+### Gravity text (top-right)
+
+1. Right-click `Canvas` → `UI` → `Text`
+2. Rename to `GravityText`
+3. Anchor preset: top-right (`Alt` + top-right)
+4. **Pos X** `-20`, **Pos Y** `-20`
+5. **Text** `Gravity: Down` (placeholder)
+6. **Font Size** `24`
+
+### Controls text (bottom)
+
+1. Right-click `Canvas` → `UI` → `Text`
+2. Rename to `ControlsText`
+3. Anchor preset: bottom-center (`Alt` + bottom-center)
+4. **Pos X** `0`, **Pos Y** `20`
+5. **Text** `A/D Move  |  Space Jump  |  Shift Flip Gravity` (placeholder)
+6. **Font Size** `20`
+7. **Alignment**: center
+
+### GameplayHUD component
+
+1. Select `Canvas`
+2. `Add Component` → `GameplayHUD`
+3. Assign references:
+   - **Progress Manager**: drag `--- Managers ---` (or leave empty if only one in scene)
+   - **Gravity Controller**: drag `--- Managers ---`
+   - **Progress Text**: drag `ProgressText`
+   - **Gravity Text**: drag `GravityText`
+   - **Controls Text**: drag `ControlsText`
+4. Save scene (`Ctrl + S`)
+
+At runtime, progress updates when collectables are picked up or reset; gravity label updates on flip and after kill-zone respawn.
 
 ---
 
@@ -192,9 +233,17 @@ Before marking Level01 “playable”, confirm:
 - [ ] Move and jump feel smooth; no air jump
 - [ ] Shift flips gravity; player lands on ceiling/ground
 - [ ] Level cannot be completed without flipping
-- [ ] HUD shows gravity state and progress
+- [ ] HUD shows gravity state and progress *(bind canvas per section 5, then verify)*
 - [ ] Death resets position, gravity, and progress
 - [ ] No tunneling through platforms at normal play speed
+
+For the HUD milestone, verify:
+
+- [ ] Progress shows `Keys 0/1` at start (or `0/0` briefly until collectables register, then `0/1`)
+- [ ] Progress becomes `Keys 1/1` after collecting
+- [ ] Gravity text shows `Gravity: Down` at start and after respawn
+- [ ] Gravity text shows `Gravity: Up` after flipping
+- [ ] Control hints stay visible at the bottom
 
 For the current level-loop milestone, verify:
 
