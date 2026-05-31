@@ -101,3 +101,15 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 **Alternatives considered:** Per-object AudioSource components, particle-heavy flip effects, requiring audio files in the repository.
 
 **Result / follow-up:** Kenney CC0 clips assigned in Unity under `Assets/Audio/` (RPG Audio, Music Jingles, Digital Audio). Initial Play Mode verification passed for all wired SFX, flip screen flash, and `R` level reset. Source mapping is recorded in [AUDIO_SOURCING.md](AUDIO_SOURCING.md).
+
+---
+
+### 2026-05-26 — Level01 layout: linear level + shuttle platform (Scheme B)
+
+**Decision:** Document an approved four-collectable Level01 in [GAME_CONCEPT.md](GAME_CONCEPT.md) Section 11: fixed C1/C3/C4 visible at start; C2 on a shuttle platform that spawns after C1; platform moves left→right only, despawns after fully exiting the spike corridor, then respawns at the left for a new run.
+
+**Reason:** Baseline mechanics are proven; the next increment is level design depth without unrelated systems. Scheme B (full left-to-right run per platform appearance) matches “next round = next run.” Collectable 4 uses spatial irreversibility: after the player passes the corridor without C4, they remain right of the corridor and cannot board in time to traverse the corridor on board again — `R` is the recovery tool, not another platform loop.
+
+**Alternatives considered:** Order-based key puzzles; infinite two-way platform loops through the corridor; recoverable C4 on later runs from the right side.
+
+**Result / follow-up:** Implementation deferred until documentation was complete. Build in phases P1–P4 per GAME_CONCEPT Section 11.13.

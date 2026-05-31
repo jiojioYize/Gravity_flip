@@ -14,7 +14,7 @@ A 2D puzzle platformer where you flip your character's gravity — not the world
 | Game scripts | Started — movement, gravity, level loop, HUD script added |
 | HUD (in-game) | Done — progress, gravity direction, control hints |
 | Audio and polish | Done — SFX, flip flash, `R` reset (Kenney CC0 clips in Unity) |
-| Level 01 scene | Started — first movement test scene exists |
+| Level 01 scene | In progress — C1 puzzle playable; full layout spec in [docs/GAME_CONCEPT.md](docs/GAME_CONCEPT.md#11-level01--detailed-level-design-approved) |
 | Playable build | Planned |
 
 ---
