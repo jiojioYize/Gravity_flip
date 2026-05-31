@@ -4,6 +4,8 @@ Record playtests here. The final report will reference this file for testing and
 
 **How to use:** Add a new row after each test session. Link to git commits when a fix is pushed.
 
+**Date column:** Use the calendar day you ran the Play Mode test, not the day a row was later edited in the file.
+
 ---
 
 ## Template
@@ -38,9 +40,9 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-05-26 | Unity Editor Play Mode (P1) | Full shuttle controls after jump/flip fix | Jump and flip OK; A/D on platform stopped working | Riding used `MovePosition` for strafe + required ground cast; riding now uses horizontal velocity when on platform contact; platform carry still runs after player at order 100 | Pending retest |
 | 2026-05-26 | Unity Editor Play Mode (P1) | A/D strafe on moving shuttle platform | Jump/flip OK; platform carry OK; A/D still dead on platform | Kinematic contact zeroed tangential velocity; strafe moved to `ApplyPlatformStrafeAfterCarry` right after platform delta; player order 150; `useFullKinematicContacts` | Pending retest |
 | 2026-05-26 | Unity Editor Play Mode (P1) | Full shuttle platform loop (carry, strafe, jump, flip, despawn) | All core P1 checks passed | Added `using GravityFlip.Level` compile fix; side-contact carry to be refined | Pass |
-| 2026-05-26 | Editor scripts only | Side contact should not stick to moving platform | P1 passed but player was carried when touching platform left/right edges | `MovingPlatformContact` uses collision normal vs gravity; register/carry only on walkable top/bottom | Pending Play Mode retest |
-| 2026-05-26 | Unity Editor Play Mode | Walkable-only platform carry | After normal-based filter, platform no longer carried player on top | Contact normal sign differs per callback body; use abs alignment + gravity cast fallback onto platform collider | Pending retest |
-| 2026-05-26 | Unity Editor Play Mode (P1) | Final shuttle platform: carry, strafe, jump, flip, despawn, walkable-only contact | No issues reported — stand on top carries; side bumps do not; inverted-gravity bottom contact OK | Abs normal alignment + gravity cast fallback on `MovingPlatformContact` | Pass |
+| 2026-05-31 | Editor scripts only | Side contact should not stick to moving platform | P1 passed but player was carried when touching platform left/right edges | `MovingPlatformContact` uses collision normal vs gravity; register/carry only on walkable top/bottom | Pending Play Mode retest |
+| 2026-05-31 | Unity Editor Play Mode | Walkable-only platform carry | After normal-based filter, platform no longer carried player on top | Contact normal sign differs per callback body; use abs alignment + gravity cast fallback onto platform collider | Pending retest |
+| 2026-05-31 | Unity Editor Play Mode (`445cef3`) | Final shuttle platform: carry, strafe, jump, flip, despawn, walkable-only contact | No issues reported — stand on top carries; side bumps do not; inverted-gravity bottom contact OK | Abs normal alignment + gravity cast fallback on `MovingPlatformContact` | Pass |
 
 ---
 
