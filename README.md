@@ -13,6 +13,7 @@ A 2D puzzle platformer where you flip your character's gravity — not the world
 | Unity project skeleton | Done |
 | Game scripts | Started — movement, gravity, level loop, HUD script added |
 | HUD (in-game) | Done — progress, gravity direction, control hints |
+| Audio and polish | Done — SFX, flip flash, `R` reset (Kenney CC0 clips in Unity) |
 | Level 01 scene | Started — first movement test scene exists |
 | Playable build | Planned |
 
@@ -26,7 +27,7 @@ A 2D puzzle platformer where you flip your character's gravity — not the world
 | Jump | `Space` |
 | Flip gravity | `Left Shift` |
 | Pause | `Esc` *(stretch)* |
-| Reset level | `R` *(stretch)* |
+| Reset level | `R` |
 
 Control hints will also appear in-game on the HUD.
 
@@ -74,9 +75,9 @@ Playtest notes: [Assets/Documentation/TESTLOG.md](Assets/Documentation/TESTLOG.m
 
 ## Credits
 
-External assets (sprites, audio) will be listed here with license links before final submission.
+**Audio:** Sound effects from [Kenney](https://kenney.nl/) (CC0): RPG Audio, Music Jingles, Digital Audio. Per-file list: [docs/AUDIO_SOURCING.md](docs/AUDIO_SOURCING.md).
 
-**Placeholder:** royalty-free assets from [Kenney.nl](https://kenney.nl/) (CC0) are planned; credits will be updated when assets are imported.
+**Sprites:** Placeholder shapes in `Level01`; Kenney 2D art planned for a later art pass (see [docs/GAME_CONCEPT.md](docs/GAME_CONCEPT.md)).
 
 ---
 

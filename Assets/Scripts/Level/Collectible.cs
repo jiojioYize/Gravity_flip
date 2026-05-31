@@ -1,3 +1,4 @@
+using GravityFlip.Audio;
 using GravityFlip.Core;
 using GravityFlip.Player;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace GravityFlip.Level
     public sealed class Collectible : MonoBehaviour
     {
         [SerializeField] private ProgressManager progressManager;
+        [SerializeField] private AudioManager audioManager;
 
         public bool IsCollected { get; private set; }
 
@@ -16,6 +18,11 @@ namespace GravityFlip.Level
             if (progressManager == null)
             {
                 progressManager = FindObjectOfType<ProgressManager>();
+            }
+
+            if (audioManager == null)
+            {
+                audioManager = FindObjectOfType<AudioManager>();
             }
 
             progressManager?.RegisterCollectible(this);
@@ -29,7 +36,11 @@ namespace GravityFlip.Level
                 return;
             }
 
-            progressManager?.Collect(this);
+            if (progressManager != null && !IsCollected)
+            {
+                progressManager.Collect(this);
+                audioManager?.PlayCollect();
+            }
         }
 
         public void MarkCollected()

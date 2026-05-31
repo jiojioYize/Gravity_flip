@@ -1,3 +1,4 @@
+using GravityFlip.Audio;
 using GravityFlip.Player;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace GravityFlip.Core
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private GravityController gravityController;
         [SerializeField] private ProgressManager progressManager;
+        [SerializeField] private AudioManager audioManager;
 
         public bool IsLevelComplete { get; private set; }
 
@@ -29,18 +31,30 @@ namespace GravityFlip.Core
             {
                 progressManager = FindObjectOfType<ProgressManager>();
             }
+
+            if (audioManager == null)
+            {
+                audioManager = FindObjectOfType<AudioManager>();
+            }
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                ResetLevel();
+            }
         }
 
         public void RespawnPlayer()
         {
-            IsLevelComplete = false;
-            gravityController?.ResetGravity();
-            progressManager?.ResetProgress();
+            RespawnPlayer(playDeathSound: true);
+        }
 
-            if (player != null && spawnPoint != null)
-            {
-                player.ResetTo(spawnPoint.position);
-            }
+        public void ResetLevel()
+        {
+            audioManager?.PlayLevelReset();
+            RespawnPlayer(playDeathSound: false);
         }
 
         public void CompleteLevel()
@@ -51,7 +65,26 @@ namespace GravityFlip.Core
             }
 
             IsLevelComplete = true;
+            audioManager?.PlayLevelComplete();
             Debug.Log("Level complete.");
+        }
+
+        private void RespawnPlayer(bool playDeathSound)
+        {
+            IsLevelComplete = false;
+
+            if (playDeathSound)
+            {
+                audioManager?.PlayDeath();
+            }
+
+            gravityController?.ResetGravity();
+            progressManager?.ResetProgress();
+
+            if (player != null && spawnPoint != null)
+            {
+                player.ResetTo(spawnPoint.position);
+            }
         }
     }
 }

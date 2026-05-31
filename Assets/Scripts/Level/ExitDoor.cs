@@ -1,3 +1,4 @@
+using GravityFlip.Audio;
 using GravityFlip.Core;
 using GravityFlip.Player;
 using UnityEngine;
@@ -12,6 +13,9 @@ namespace GravityFlip.Level
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Color lockedColor = Color.red;
         [SerializeField] private Color openColor = Color.green;
+        [SerializeField] private AudioManager audioManager;
+
+        private bool wasOpen;
 
         private void Awake()
         {
@@ -28,6 +32,11 @@ namespace GravityFlip.Level
             if (spriteRenderer == null)
             {
                 spriteRenderer = GetComponent<SpriteRenderer>();
+            }
+
+            if (audioManager == null)
+            {
+                audioManager = FindObjectOfType<AudioManager>();
             }
 
             GetComponent<Collider2D>().isTrigger = true;
@@ -81,6 +90,13 @@ namespace GravityFlip.Level
 
         private void SetOpenState(bool isOpen)
         {
+            if (isOpen && !wasOpen)
+            {
+                audioManager?.PlayDoorUnlock();
+            }
+
+            wasOpen = isOpen;
+
             if (spriteRenderer != null)
             {
                 spriteRenderer.color = isOpen ? openColor : lockedColor;

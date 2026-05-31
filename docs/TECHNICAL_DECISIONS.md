@@ -89,3 +89,15 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 **Alternatives considered:** TextMeshPro for sharper text rendering.
 
 **Result / follow-up:** The HUD listens to `ProgressManager` and `GravityController` events. Initial Unity Editor Play Mode verification passed: progress and gravity labels update on collect, flip, and kill-zone respawn; control hints remain visible.
+
+---
+
+### 2026-05-26 — Centralize SFX and add lightweight flip feedback
+
+**Decision:** Add `AudioManager` with optional Inspector-assigned clips, `FlipScreenFlash` on the HUD canvas, and `R` key level reset via `GameManager.ResetLevel()`.
+
+**Reason:** Baseline requirement #8 asks for simple SFX and visible flip feedback. A single audio component keeps wiring simple; empty clip slots fail silently so testing can continue before final assets are imported. Screen flash gives immediate feedback without moving level geometry. `R` reset improves puzzle iteration during playtesting and demo.
+
+**Alternatives considered:** Per-object AudioSource components, particle-heavy flip effects, requiring audio files in the repository.
+
+**Result / follow-up:** Kenney CC0 clips assigned in Unity under `Assets/Audio/` (RPG Audio, Music Jingles, Digital Audio). Initial Play Mode verification passed for all wired SFX, flip screen flash, and `R` level reset. Source mapping is recorded in [AUDIO_SOURCING.md](AUDIO_SOURCING.md).

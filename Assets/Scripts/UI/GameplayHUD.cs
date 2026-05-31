@@ -17,7 +17,7 @@ namespace GravityFlip.UI
         [SerializeField] private string progressLabel = "Keys";
         [SerializeField] private string gravityDownLabel = "Gravity: Down";
         [SerializeField] private string gravityUpLabel = "Gravity: Up";
-        [SerializeField] private string controlsLabel = "A/D Move  |  Space Jump  |  Shift Flip Gravity";
+        [SerializeField] private string controlsLabel = "A/D Move  |  Space Jump  |  Shift Flip  |  R Reset";
 
         private void Awake()
         {

@@ -25,12 +25,14 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-05-26 | Unity Editor Play Mode (`2f240ea`) | Level01 layout: collectable unreachable from ground-only path; reachable via ceiling route after gravity flip | No issues reported during manual verification | No code change required | Pass |
 | 2026-05-26 | Editor scripts only | Added `GameplayHUD` for progress, gravity direction, and control hints | Not yet tested in Unity Play Mode because canvas binding is required | Documented canvas setup in `SETUP.md` section 5 | Pending Play Mode test |
 | 2026-05-26 | Unity Editor Play Mode | HUD progress, gravity label, control hints; updates on collect, flip, and kill-zone respawn | No issues reported during manual verification | No code change required | Pass |
+| 2026-05-26 | Editor scripts only | Added `AudioManager`, `FlipScreenFlash`, and `R` level reset; wired SFX hooks to jump, flip, collect, death, door, and win | Not yet tested in Unity Play Mode; audio clips must be assigned in Inspector | Documented setup in `SETUP.md` section 8 | Pending Play Mode test |
+| 2026-05-26 | Unity Editor Play Mode | SFX (jump, flip, collect, death, door unlock, level complete, level reset), flip screen flash, and `R` level reset | No issues reported during manual verification | No code change required | Pass |
 
 ---
 
 ## Known issues (open)
 
-_None for the current HUD test scope._
+_None for the current audio and polish feedback test scope._
 
 ---
 
@@ -42,3 +44,4 @@ _Use this section for quick reference when writing the report._
 - First level-loop implementation passed manual Unity Editor verification: exit locked until collectable collected, collectable disappears on pickup, level completes at exit, kill zone respawns player at spawn point, gravity resets to normal, and collectable progress resets.
 - Level01 reference puzzle layout verified: the collectable cannot be reached without using gravity flip; the ceiling route allows pickup and level completion.
 - Gameplay HUD passed manual Unity Editor verification: progress `Keys 0/1` → `1/1`, gravity Down/Up on flip, controls visible, reset after kill zone matches gameplay state.
+- Audio and polish feedback passed manual Unity Editor verification: jump, flip, collect, death, door unlock, level complete, and level reset sounds; flip screen flash on gravity change; `R` resets player state without using death SFX path incorrectly.

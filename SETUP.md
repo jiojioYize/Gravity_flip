@@ -40,7 +40,7 @@ Scripts/Core/     `GravityController`
 Scripts/Player/   `PlayerController2D`
 Scripts/Level/    `Collectible`, `ExitDoor`, `KillZone`
 Scripts/UI/       `GameplayHUD`
-Scripts/Audio/    *(pending)*
+Scripts/Audio/    `AudioManager`
 Prefabs/          *(pending)*
 Sprites/          *(pending)*
 Audio/            *(pending)*
@@ -163,7 +163,7 @@ Empty GameObject `--- Managers ---` in scene with:
 - `GravityController`
 - `GameManager`
 - `ProgressManager`
-- `AudioManager` *(when audio added)*
+- `AudioManager`
 
 Create a `SpawnPoint` empty GameObject at the player's starting position.
 
@@ -216,7 +216,54 @@ When the player enters the kill zone, the player respawns, gravity resets to nor
 
 ---
 
-## 8. Build settings *(pending — Week 2)*
+## 8. Audio and polish feedback *(implemented — bind if setting up a new scene)*
+
+### Import sound files
+
+1. Create folder `Assets/Audio/`
+2. Import short `.wav` / `.ogg` clips (Kenney impact/UI packs are fine)
+3. Suggested mapping:
+
+| Inspector field | Suggested use |
+|---------------|---------------|
+| Jump Clip | Jump |
+| Flip Clip | Gravity flip |
+| Collect Clip | Pick up collectable |
+| Death Clip | Kill zone respawn |
+| Door Unlock Clip | Exit turns green |
+| Level Complete Clip | Touch exit after unlock |
+| Level Reset Clip | Press `R` (optional; leave empty if none) |
+
+### AudioManager on Managers
+
+1. Select `--- Managers ---`
+2. `Add Component` → `AudioManager`
+3. Unity adds an `Audio Source` automatically if missing
+4. Drag each imported clip into the matching field (empty slots are skipped at runtime)
+
+### Flip screen flash
+
+1. Select `Canvas`
+2. Right-click `Canvas` → `UI` → `Image`
+3. Rename to `FlipFlashOverlay`
+4. Anchor: stretch full screen (hold `Alt`, click stretch-stretch preset)
+5. Set **Left / Top / Right / Bottom** offsets to `0`
+6. Set **Color** to white with alpha `0` (fully transparent)
+7. Disable **Raycast Target** on the Image (optional, avoids blocking clicks)
+8. Select `Canvas` → `Add Component` → `FlipScreenFlash`
+9. Assign **Flash Image** → `FlipFlashOverlay`
+10. **Gravity Controller** → `--- Managers ---` (or leave empty)
+
+### Verify polish
+
+- [ ] Jump / flip / collect / death / door unlock / level complete play when clips are assigned
+- [ ] `R` resets player, progress, and gravity (reset sound optional)
+- [ ] Flip shows a brief screen flash
+- [ ] HUD bottom text mentions `R Reset`
+
+---
+
+## 9. Build settings *(pending — Week 2)*
 
 1. File → Build Settings
 2. Add `Level01` (and `MainMenu` if implemented) to Scenes In Build
@@ -226,7 +273,7 @@ Document build output path in README when first build is exported.
 
 ---
 
-## 9. Verification checklist
+## 10. Verification checklist
 
 Before marking Level01 “playable”, confirm:
 

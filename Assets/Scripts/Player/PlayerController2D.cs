@@ -1,3 +1,4 @@
+using GravityFlip.Audio;
 using GravityFlip.Core;
 using UnityEngine;
 
@@ -18,6 +19,7 @@ namespace GravityFlip.Player
 
         [Header("References")]
         [SerializeField] private GravityController gravityController;
+        [SerializeField] private AudioManager audioManager;
 
         private readonly RaycastHit2D[] groundHits = new RaycastHit2D[4];
 
@@ -42,6 +44,11 @@ namespace GravityFlip.Player
             if (gravityController == null)
             {
                 gravityController = FindObjectOfType<GravityController>();
+            }
+
+            if (audioManager == null)
+            {
+                audioManager = FindObjectOfType<AudioManager>();
             }
 
             body.gravityScale = 0f;
@@ -109,6 +116,7 @@ namespace GravityFlip.Player
 
             Vector2 horizontalVelocity = Vector2.Dot(body.velocity, Vector2.right) * Vector2.right;
             body.velocity = horizontalVelocity + JumpDirection * jumpSpeed;
+            audioManager?.PlayJump();
         }
 
         private void ApplyCustomGravity()
