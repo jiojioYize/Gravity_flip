@@ -11,10 +11,10 @@ A 2D puzzle platformer where you flip your character's gravity — not the world
 | Item | Status |
 |------|--------|
 | Unity project skeleton | Done |
-| Game scripts | Started — movement, gravity, level loop, HUD script added |
+| Game scripts | In progress — movement, gravity, level loop, HUD, P1 shuttle platform (verified in Play Mode) |
 | HUD (in-game) | Done — progress, gravity direction, control hints |
 | Audio and polish | Done — SFX, flip flash, `R` reset (Kenney CC0 clips in Unity) |
-| Level 01 scene | In progress — C1 puzzle playable; full layout spec in [docs/GAME_CONCEPT.md](docs/GAME_CONCEPT.md#11-level01--detailed-level-design-approved) |
+| Level 01 scene | In progress — C1 + P1 shuttle platform playable; P2–P4 layout pending ([GAME_CONCEPT.md](docs/GAME_CONCEPT.md#11-level01--detailed-level-design-approved), [SETUP.md](SETUP.md#9-shuttle-platform--p1-implemented--requires-unity-binding)) |
 | Playable build | Planned |
 
 ---

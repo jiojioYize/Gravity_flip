@@ -38,7 +38,7 @@ Current / planned layout in `Assets/`:
 Scenes/           *(pending)*
 Scripts/Core/     `GravityController`
 Scripts/Player/   `PlayerController2D`
-Scripts/Level/    `Collectible`, `ExitDoor`, `KillZone`
+Scripts/Level/    `Collectible`, `ExitDoor`, `KillZone`, `MovingPlatform2D`, `ShuttlePlatformController`, `PlatformCorridorExitTrigger`
 Scripts/UI/       `GameplayHUD`
 Scripts/Audio/    `AudioManager`
 Prefabs/          *(pending)*
@@ -100,7 +100,8 @@ Align with [docs/GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 2:
    - Jump Speed: `12`
    - Custom Gravity: `28`
    - Ground Check Distance: `0.08`
-9. Drag to `Assets/Prefabs/Player.prefab`
+9. `PlatformRider2D` is added automatically via `PlayerController2D` (`RequireComponent`); no extra binding needed
+10. Drag to `Assets/Prefabs/Player.prefab`
 
 ---
 
@@ -263,7 +264,69 @@ When the player enters the kill zone, the player respawns, gravity resets to nor
 
 ---
 
-## 9. Build settings *(pending — Week 2)*
+## 9. Shuttle platform — P1 *(implemented — requires Unity binding)*
+
+Implements [GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 11.6 (Scheme B): platform inactive until Collectable 1 is taken, moves left→right, despawns after the corridor exit trigger, then respawns at the left for the next run. Player rides via collision parenting; riders detach and fall when the platform despawns.
+
+### Create the platform object
+
+1. In `Hierarchy`, create `2D Object > Sprites > Square`
+2. Rename to `ShuttlePlatform`
+3. Set a distinct colour (e.g. cyan) and scale to a platform size (e.g. `(3, 0.5, 1)`)
+4. Add `Rigidbody2D`:
+   - **Body Type**: `Kinematic` (script also forces this at runtime)
+   - **Freeze Rotation** Z: on
+5. Add `BoxCollider2D` — **not** a trigger (player stands on top or bottom)
+6. Add `MovingPlatform2D`
+7. Add `ShuttlePlatformController` on the same object (supported — controller stays enabled while the platform is hidden)
+8. Set layer to `Ground` (or your walkable layer) so the player ground check and collisions work
+
+**Optional hierarchy:** Put `ShuttlePlatformController` on a parent empty `ShuttlePlatformSystem` and the moving body on a child; the script can hide the child with `SetActive` if references point at the child.
+
+### Spawn point (left dock)
+
+1. Create empty GameObject `ShuttleSpawnPoint`
+2. Place it where each run should start (left side of the platform track, before the C2/C4 corridor)
+3. On `ShuttlePlatform` → `Shuttle Platform Controller`:
+   - **Moving Platform**: drag `ShuttlePlatform` (self)
+   - **Spawn Point**: drag `ShuttleSpawnPoint`
+   - **Activation Collectible**: drag the **first** collectable (`Collectable` / C1)
+   - **Progress Manager**: leave empty if only one manager exists
+4. **Respawn Delay**: `0.5` (adjust if runs feel too fast)
+
+At Play Mode start the platform should be **hidden** until C1 is collected.
+
+### Corridor exit trigger (despawn gate)
+
+Place this at the **right end** of the spike corridor so the platform only despawns after it has fully passed through the corridor (per design).
+
+1. Create empty GameObject `PlatformCorridorExit`
+2. Add `BoxCollider2D`, enable **Is Trigger**
+3. Scale the collider to span the corridor height/width at the exit line (platform collider must enter this volume)
+4. Add `PlatformCorridorExitTrigger`
+5. Assign **Shuttle Controller** → `ShuttlePlatform`, or leave empty if only one controller exists
+
+### Physics matrix
+
+- `Player` ↔ platform layer: collision enabled
+- Platform uses non-trigger collider so `MovingPlatform2D` receives `OnCollision` with the player
+
+### Verify P1 (Play Mode)
+
+- [ ] Before C1: `ShuttlePlatform` is inactive / not moving
+- [ ] After C1: platform appears at `ShuttleSpawnPoint` and moves **right only**
+- [ ] Standing on the platform while moving: player moves with it
+- [ ] Jumping off: player leaves the platform normally
+- [ ] When platform enters `PlatformCorridorExit` trigger: platform hides; player on board **falls** (parent released)
+- [ ] After respawn delay: platform reappears at the left and starts another run
+- [ ] Kill zone or `R` reset: progress clears → platform system stops until C1 is collected again
+- [ ] Death/`R` respawn: player is not stuck parented to a hidden platform
+
+Collectable 2 on the platform and full corridor art are **P2–P4**; P1 only needs movement, activation, despawn loop, and carry.
+
+---
+
+## 10. Build settings *(pending — Week 2)*
 
 1. File → Build Settings
 2. Add `Level01` (and `MainMenu` if implemented) to Scenes In Build
@@ -273,7 +336,7 @@ Document build output path in README when first build is exported.
 
 ---
 
-## 10. Verification checklist
+## 11. Verification checklist
 
 Before marking Level01 “playable”, confirm:
 

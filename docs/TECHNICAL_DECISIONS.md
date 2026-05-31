@@ -113,3 +113,61 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 **Alternatives considered:** Order-based key puzzles; infinite two-way platform loops through the corridor; recoverable C4 on later runs from the right side.
 
 **Result / follow-up:** Implementation deferred until documentation was complete. Build in phases P1–P4 per GAME_CONCEPT Section 11.13.
+
+---
+
+### 2026-05-26 — P1 shuttle platform: kinematic move + collision parenting
+
+**Decision:** Implement the shuttle as `MovingPlatform2D` (kinematic `Rigidbody2D`, constant world-direction velocity) plus `ShuttlePlatformController` (spawn at left after a referenced C1 `Collectible`, despawn on `PlatformCorridorExitTrigger`, timed respawn for the next run). Carry the player by parenting on `OnCollision` with the platform; `ReleaseAllRiders()` on despawn and `PlayerController2D.ResetTo()` clears parent on death/`R`.
+
+**Reason:** Matches Scheme B without moving level geometry. Parenting is reliable for a single rider on a kinematic platform in 2D and matches the design note that the player falls if still aboard at despawn. A dedicated exit trigger keeps “fully left the corridor” as a level-authoring choice instead of hard-coded distances.
+
+**Alternatives considered:** `PlatformEffector2D` one-way tops only; moving the player by adding platform delta to velocity each frame; despawning at a fixed X coordinate.
+
+**Result / follow-up:** P1 complete — Play Mode verified (see TESTLOG.md). C2 on platform and corridor blockout continue in P2–P4.
+
+---
+
+### 2026-05-26 — Moving platform carry: velocity + delta, not parenting
+
+**Decision:** Drop transform parenting for the shuttle. `MovingPlatform2D` exposes per-frame `Velocity`, applies `MovePosition` delta to rider bodies, and runs before the player (`DefaultExecutionOrder`). `PlatformRider2D` on the player adds platform velocity in `PlayerController2D.ApplyHorizontalMovement` so custom gravity does not erase carry.
+
+**Reason:** Playtest showed the platform moved but the player slipped off. Parenting a dynamic `Rigidbody2D` while rewriting `body.velocity` each `FixedUpdate` does not keep world motion in sync with a kinematic platform.
+
+**Alternatives considered:** `PlatformEffector2D` one-way only; making the player kinematic while riding; friction-only coupling.
+
+**Result / follow-up:** First retest: carry worked but player could not move/jump/flip on board. Second approach: re-parent while riding; player applies horizontal input via `MovePosition`, keeps only gravity-axis velocity, treats platform contact as grounded, unparents on jump.
+
+---
+
+### 2026-05-26 — Riding mode: parent for carry, separate input from world velocity
+
+**Decision:** While `transform.parent` is a `MovingPlatform2D`, use `ApplyRidingMovement()` (horizontal `MovePosition`, strip non-gravity velocity) instead of adding platform velocity to `body.velocity`. Restore parenting on platform collision; `TryJump` unparents before impulse.
+
+**Reason:** Kinematic platform + per-frame velocity rewrite caused the physics solver to cancel tangential input; double application of platform motion also blocked jumps (ground check failed on moving colliders).
+
+**Result / follow-up:** Parenting-only riding failed retest (platform left player behind). Final P1 carry: platform `MovePosition` delta applied to rider bodies at execution order -50; player at +50 uses contact-based riding (horizontal `MovePosition`, gravity-axis velocity only, no extra platform velocity term).
+
+---
+
+### 2026-05-26 — Dynamic player cannot ride via transform parenting
+
+**Decision:** Do not parent the player to the kinematic platform. Carry riders by applying the same `MovePosition` delta to the player `Rigidbody2D` each physics step.
+
+**Reason:** A dynamic `Rigidbody2D` child does not reliably follow a kinematic parent moved with `Rigidbody2D.MovePosition`; parenting caused the platform to slide away from the player.
+
+**Alternatives considered:** Make player kinematic while riding; friction joints; platform velocity added to `body.velocity` without delta (slip).
+
+**Result / follow-up:** Combined with contact-based riding movement for input/jump/flip (see prior riding-mode entry). Pending P1 retest.
+
+---
+
+### 2026-05-26 — Platform carry only on walkable contact normals
+
+**Decision:** Register riders and active platform contact only when a collision contact normal aligns with the current “up” (`-gravityDirection`), via `MovingPlatformContact.HasWalkableSupport`. Side bumps unregister the rider instead of carrying.
+
+**Reason:** P1 playtest passed, but brushing the platform’s vertical edges pulled the player along unrealistically.
+
+**Alternatives considered:** Layered child colliders (top-only); one-way platform effector; ignoring all side collisions globally.
+
+**Result / follow-up:** Retest passed after abs-normal alignment and gravity cast fallback. P1 shuttle milestone complete in Play Mode.

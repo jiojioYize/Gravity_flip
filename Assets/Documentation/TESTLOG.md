@@ -27,12 +27,26 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-05-26 | Unity Editor Play Mode | HUD progress, gravity label, control hints; updates on collect, flip, and kill-zone respawn | No issues reported during manual verification | No code change required | Pass |
 | 2026-05-26 | Editor scripts only | Added `AudioManager`, `FlipScreenFlash`, and `R` level reset; wired SFX hooks to jump, flip, collect, death, door, and win | Not yet tested in Unity Play Mode; audio clips must be assigned in Inspector | Documented setup in `SETUP.md` section 8 | Pending Play Mode test |
 | 2026-05-26 | Unity Editor Play Mode | SFX (jump, flip, collect, death, door unlock, level complete, level reset), flip screen flash, and `R` level reset | No issues reported during manual verification | No code change required | Pass |
+| 2026-05-26 | Editor scripts only | P1 shuttle platform: `MovingPlatform2D`, `ShuttlePlatformController`, `PlatformCorridorExitTrigger`; player detach on reset | Not yet tested in Unity Play Mode — scene objects and Inspector binding required | Documented setup in `SETUP.md` section 9 | Pending Play Mode test |
+| 2026-05-26 | Unity Editor Play Mode (P1) | Collect C1 → shuttle platform should appear | Platform did not appear after C1 | `ShuttlePlatformController` disabled itself via `SetActive(false)` on the same GameObject as the controller; hide now toggles renderers/colliders when controller and platform share one object | Pending retest |
+| 2026-05-26 | Unity Editor Play Mode (P1) | Stand on moving shuttle platform after C1 | Player could not stay on platform; platform slid away | Parenting fought custom velocity; added `PlatformRider2D` + platform velocity/delta carry, removed parenting | Pending retest |
+| 2026-05-26 | Unity Editor Play Mode (P1) | Move/jump/flip while riding shuttle platform | Player followed platform but could not move, jump, or flip | Velocity + delta carry conflicted with kinematic contact solver; riding mode uses parenting + gravity-only velocity + `MovePosition` for input; jump unparents | Pending retest |
+| 2026-05-26 | Unity Editor Play Mode (P1) | Ride shuttle after parenting-only riding fix | Platform moved without carrying player again | Dynamic `Rigidbody2D` does not follow parent `MovePosition`; reverted to delta carry on platform + riding input without parenting or platform velocity on player | Pending retest |
+| 2026-05-26 | Unity Editor Play Mode (P1) | Jump and flip gravity while on shuttle platform | Platform carry and strafe worked; jump and Shift flip did not | Riding mode stripped jump velocity each frame; flip kept platform carry/contact; jump before riding, leave-support check, `ReleaseFromPlatform` on jump/flip | Pending retest |
+| 2026-05-26 | Unity Editor Play Mode (P1) | Jump/flip on shuttle; console errors | Jump and flip still failed; `NullReferenceException` in `PlatformRider2D.OnCollisionExit2D` | `null == null` entered exit handler after `ReleaseFromPlatform`; guard `activePlatform`; brief detach lock after jump/flip | Pending retest |
+| 2026-05-26 | Unity Editor Play Mode (P1) | Jump and Shift flip on moving platform | A/D and carry OK; jump failed; Shift needed two presses and flipped twice | Platform FixedUpdate ran before player (re-carried jump); jump detach moved to Update; platform order 100; interaction block; flip uses `Fire3` only + cooldown | Pending retest |
+| 2026-05-26 | Unity Editor Play Mode (P1) | Full shuttle controls after jump/flip fix | Jump and flip OK; A/D on platform stopped working | Riding used `MovePosition` for strafe + required ground cast; riding now uses horizontal velocity when on platform contact; platform carry still runs after player at order 100 | Pending retest |
+| 2026-05-26 | Unity Editor Play Mode (P1) | A/D strafe on moving shuttle platform | Jump/flip OK; platform carry OK; A/D still dead on platform | Kinematic contact zeroed tangential velocity; strafe moved to `ApplyPlatformStrafeAfterCarry` right after platform delta; player order 150; `useFullKinematicContacts` | Pending retest |
+| 2026-05-26 | Unity Editor Play Mode (P1) | Full shuttle platform loop (carry, strafe, jump, flip, despawn) | All core P1 checks passed | Added `using GravityFlip.Level` compile fix; side-contact carry to be refined | Pass |
+| 2026-05-26 | Editor scripts only | Side contact should not stick to moving platform | P1 passed but player was carried when touching platform left/right edges | `MovingPlatformContact` uses collision normal vs gravity; register/carry only on walkable top/bottom | Pending Play Mode retest |
+| 2026-05-26 | Unity Editor Play Mode | Walkable-only platform carry | After normal-based filter, platform no longer carried player on top | Contact normal sign differs per callback body; use abs alignment + gravity cast fallback onto platform collider | Pending retest |
+| 2026-05-26 | Unity Editor Play Mode (P1) | Final shuttle platform: carry, strafe, jump, flip, despawn, walkable-only contact | No issues reported — stand on top carries; side bumps do not; inverted-gravity bottom contact OK | Abs normal alignment + gravity cast fallback on `MovingPlatformContact` | Pass |
 
 ---
 
 ## Known issues (open)
 
-_None for the current audio and polish feedback test scope._
+_None for the P1 shuttle platform milestone._
 
 ---
 
@@ -45,3 +59,4 @@ _Use this section for quick reference when writing the report._
 - Level01 reference puzzle layout verified: the collectable cannot be reached without using gravity flip; the ceiling route allows pickup and level completion.
 - Gameplay HUD passed manual Unity Editor verification: progress `Keys 0/1` → `1/1`, gravity Down/Up on flip, controls visible, reset after kill zone matches gameplay state.
 - Audio and polish feedback passed manual Unity Editor verification: jump, flip, collect, death, door unlock, level complete, and level reset sounds; flip screen flash on gravity change; `R` resets player state without using death SFX path incorrectly.
+- P1 shuttle platform passed manual Unity Editor verification: spawns after C1, moves left→right, carries player on walkable surfaces only (not side bumps), A/D strafe, jump, single Shift flip (`Fire3`), corridor despawn and respawn loop, kill/`R` reset behaviour unchanged.

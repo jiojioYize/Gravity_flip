@@ -14,6 +14,8 @@ namespace GravityFlip.Core
         public Vector2 GravityDirection { get; private set; } = Vector2.down;
         public bool IsInverted => GravityDirection == Vector2.up;
 
+        private float flipCooldownUntil;
+
         private void Awake()
         {
             if (audioManager == null)
@@ -26,6 +28,13 @@ namespace GravityFlip.Core
 
         public void FlipGravity()
         {
+            if (Time.time < flipCooldownUntil)
+            {
+                return;
+            }
+
+            flipCooldownUntil = Time.time + 0.2f;
+
             Vector2 previousDirection = GravityDirection;
             SetGravityDirection(-GravityDirection);
 
