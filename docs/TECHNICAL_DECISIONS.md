@@ -144,7 +144,7 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 
 **Alternatives considered:** Parenting; platform velocity added to `body.velocity`; `MovePosition` strafe before platform move; side collisions ignored globally; top-only child colliders.
 
-**Result / follow-up:** P1 milestone verified in Unity Editor Play Mode (commit `445cef3`). See [TESTLOG.md](../Assets/Documentation/TESTLOG.md). C2 on platform and corridor blockout continue in P2–P4.
+**Result / follow-up:** P1 milestone verified in Unity Editor Play Mode (commit `445cef3`). See [TESTLOG.md](../Assets/Documentation/TESTLOG.md). C2 implemented in P2; corridor blockout continues in P3–P4.
 
 ---
 
@@ -156,4 +156,28 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 
 **Alternatives considered:** Cinemachine package; fixed wide orthographic size only; full X+Y follow to player position (rejected after playtest feedback).
 
-**Result / follow-up:** Script revised after framing feedback; Play Mode verification pending (see SETUP.md section 10).
+**Result / follow-up:** Verified in Play Mode with locked Y and relative horizontal follow (see [TESTLOG.md](../Assets/Documentation/TESTLOG.md), SETUP.md section 11).
+
+---
+
+### 2026-06-01 — P2 Collectable 2 bound to shuttle runs
+
+**Decision:** Add `PlatformBoundCollectible` on a child of `ShuttlePlatform` with `Collectible` + `BoxCollider2D`. GameObject stays active at load for progress registration; renderer and trigger toggle on `PlatformRunStarted` / `PlatformRunEnded`. Platform visibility toggles root renderers/colliders only so C2 is not forced visible with the shuttle body.
+
+**Reason:** Design requires C2 only while a platform instance is active, with another chance on the next run if missed, without breaking HUD totals from an inactive collectible `Awake`.
+
+**Alternatives considered:** Per-run spawn prefab; whole-object `SetActive` on C2 at load; child included in platform `GetComponentsInChildren` hide (rejected — would show C2 whenever shuttle shows).
+
+**Result / follow-up:** Verified in Unity Editor Play Mode on 2026-06-01. See [TESTLOG.md](../Assets/Documentation/TESTLOG.md). P3 C3 placement and hazard clearance next.
+
+---
+
+### 2026-06-01 — Walkway end caps deferred until blockout
+
+**Decision:** Fix “walk off finite ground/ceiling ends” with **invisible BoxCollider2D end walls** on the `Ground` layer at the left/right edges of the final walkway span. **Do not add** until P3–P4 blockout is done and `Ground` / `Ceiling` length is final.
+
+**Reason:** End positions depend on total level width; placing caps on the current short platforms would need moving again when geometry grows. Editor-only colliders match project conventions (no position-clamp script).
+
+**Alternatives considered:** Extend platforms only (still need end caps at level extremities); side kill zones (respawn punishment); `CameraFollow2D` bounds (camera only); runtime X clamp on player.
+
+**Result / follow-up:** Documented in [SETUP.md](../SETUP.md) section 14. Revisit before final Level01 playtest / export.

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using GravityFlip.Core;
 using UnityEngine;
@@ -19,6 +20,11 @@ namespace GravityFlip.Level
         private bool isRunInProgress;
         private bool hideUsesSetActive;
         private Coroutine respawnRoutine;
+
+        public event Action PlatformRunStarted;
+        public event Action PlatformRunEnded;
+
+        public bool IsRunActive => isRunInProgress;
 
         private SpriteRenderer[] platformRenderers;
         private Collider2D[] platformColliders;
@@ -44,8 +50,9 @@ namespace GravityFlip.Level
             {
                 GameObject platformObject = movingPlatform.gameObject;
                 hideUsesSetActive = platformObject != gameObject;
-                platformRenderers = platformObject.GetComponentsInChildren<SpriteRenderer>(true);
-                platformColliders = platformObject.GetComponentsInChildren<Collider2D>(true);
+                // Root only — child collectables (C2) manage their own renderers/colliders.
+                platformRenderers = platformObject.GetComponents<SpriteRenderer>();
+                platformColliders = platformObject.GetComponents<Collider2D>();
             }
         }
 
@@ -109,6 +116,7 @@ namespace GravityFlip.Level
 
             StopAllRuns();
             HidePlatform();
+            PlatformRunEnded?.Invoke();
         }
 
         private void StartRunIfIdle()
@@ -139,6 +147,7 @@ namespace GravityFlip.Level
             movingPlatform.transform.position = spawnPoint.position;
             movingPlatform.ReleaseAllRiders();
             movingPlatform.BeginMovement();
+            PlatformRunStarted?.Invoke();
         }
 
         private void EndCurrentRun()
@@ -148,15 +157,7 @@ namespace GravityFlip.Level
                 return;
             }
 
-            isRunInProgress = false;
-
-            if (movingPlatform != null)
-            {
-                movingPlatform.StopMovement();
-                movingPlatform.ReleaseAllRiders();
-            }
-
-            HidePlatform();
+            EndRunAndHidePlatform();
 
             if (isSystemActive)
             {
@@ -166,6 +167,7 @@ namespace GravityFlip.Level
 
         private void StopAllRuns()
         {
+            bool wasRunning = isRunInProgress;
             isRunInProgress = false;
 
             if (respawnRoutine != null)
@@ -178,6 +180,30 @@ namespace GravityFlip.Level
             {
                 movingPlatform.StopMovement();
                 movingPlatform.ReleaseAllRiders();
+            }
+
+            if (wasRunning)
+            {
+                PlatformRunEnded?.Invoke();
+            }
+        }
+
+        private void EndRunAndHidePlatform()
+        {
+            bool wasRunning = isRunInProgress;
+            isRunInProgress = false;
+
+            if (movingPlatform != null)
+            {
+                movingPlatform.StopMovement();
+                movingPlatform.ReleaseAllRiders();
+            }
+
+            HidePlatform();
+
+            if (wasRunning)
+            {
+                PlatformRunEnded?.Invoke();
             }
         }
 

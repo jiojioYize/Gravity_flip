@@ -38,7 +38,7 @@ Current / planned layout in `Assets/`:
 Scenes/           *(pending)*
 Scripts/Core/     `GravityController`, `CameraFollow2D`, `GameManager`, `ProgressManager`
 Scripts/Player/   `PlayerController2D`
-Scripts/Level/    `Collectible`, `ExitDoor`, `KillZone`, `MovingPlatform2D`, `ShuttlePlatformController`, `PlatformCorridorExitTrigger`
+Scripts/Level/    `Collectible`, `PlatformBoundCollectible`, `ExitDoor`, `KillZone`, `MovingPlatform2D`, `ShuttlePlatformController`, `PlatformCorridorExitTrigger`
 Scripts/UI/       `GameplayHUD`
 Scripts/Audio/    `AudioManager`
 Prefabs/          *(pending)*
@@ -70,7 +70,7 @@ Build with 2D sprites + BoxCollider2D (or Tilemap):
 |--------|-------|
 | Ground | Bottom platform spanning level width |
 | Ceiling | Top platform (walkable when gravity inverted) |
-| Side walls | Optional; prevent falling off horizontally |
+| Side walls | **Deferred** — invisible end caps after full blockout (see [section 14](#14-walkway-end-caps-deferred-until-blockout-complete)) |
 | Mid platforms | Support reference puzzle layout |
 | Spawn point | Empty GameObject at player start position |
 | Collectable | Trigger collider; unreachable without flip puzzle |
@@ -323,11 +323,48 @@ Place this at the **right end** of the spike corridor so the platform only despa
 - [ ] Kill zone or `R` reset: progress clears → platform system stops until C1 is collected again
 - [ ] Death/`R` respawn: player is not stuck parented to a hidden platform
 
-Collectable 2 on the platform and full corridor art are **P2–P4**; P1 only needs movement, activation, despawn loop, and carry.
+P1 only needs movement, activation, despawn loop, and carry. **P2** adds Collectable 2 on the platform (section 10).
 
 ---
 
-## 10. Camera follow 2D *(implemented — requires Unity binding)*
+## 10. Collectable 2 on shuttle platform — P2 *(implemented — verified 2026-06-01)*
+
+Implements [GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 11.7: C2 rides on the shuttle, is **hidden at level start**, appears only during an active platform run, and respawns on the next run if missed. Top and bottom boarding use the same walkable-surface rules as P1 (`MovingPlatformContact`).
+
+### Create C2 as a child of the platform
+
+1. In `Hierarchy`, expand `ShuttlePlatform`
+2. Create `2D Object > Sprites > Square` **as a child** of `ShuttlePlatform`
+3. Rename to `Collectable2`
+4. Set a distinct colour (e.g. gold) and scale (e.g. `(0.35, 0.35, 1)`)
+5. Set **Transform** local position on top of the platform (e.g. `x: 0`, `y: 0.45`) — adjust in Scene view
+6. Ensure **Box Collider 2D** is present (Square sprite usually adds one); `Collectible` sets **Is Trigger** at runtime
+7. Add `Collectible` (registers with `ProgressManager` at load)
+8. Add `PlatformBoundCollectible`:
+   - **Shuttle Controller**: drag `ShuttlePlatform` (or leave empty)
+   - **Pickup Renderer** / **Pickup Collider**: drag the components on `Collectable2` (or leave empty — auto-fills)
+9. Keep the **GameObject active** in the hierarchy (script hides renderer/collider until a run starts)
+
+### Progress and naming
+
+- Rename the first collectable in the Inspector to `Collectable1` (optional, for clarity); shuttle **Activation Collectible** must still reference C1.
+- HUD should show `0/2` (or `0/4` when C3/C4 exist) once both collectables are in the scene and active at load.
+
+### Verify P2 (Play Mode)
+
+- [ ] Before C1: `Collectable2` is **not** visible and cannot be collected
+- [ ] After C1: when the shuttle run starts, C2 appears on the moving platform
+- [ ] Collect C2 while riding (normal gravity on top) or after flipping to ceiling and dropping onto the platform (underside boarding)
+- [ ] Miss C2: after the platform despawns and respawns at the left, C2 appears again on the next run
+- [ ] After collecting C2: it stays gone for later runs in the same attempt
+- [ ] `R` or kill zone: progress resets; C2 hidden again until C1 is collected and a new run starts
+- [ ] P1 loop still works (carry, strafe, jump, flip, corridor despawn)
+
+C3 placement and corridor blockout are **P3–P4**.
+
+---
+
+## 11. Camera follow 2D *(implemented — requires Unity binding)*
 
 Linear `Level01` is wider than one screen. `CameraFollow2D` scrolls **horizontally only** so your placed ceiling and floor heights stay framed; the camera does not chase the player on Y by default.
 
@@ -364,7 +401,7 @@ Linear `Level01` is wider than one screen. `CameraFollow2D` scrolls **horizontal
 
 ---
 
-## 11. Build settings *(pending — Week 2)*
+## 12. Build settings *(pending — Week 2)*
 
 1. File → Build Settings
 2. Add `Level01` (and `MainMenu` if implemented) to Scenes In Build
@@ -374,7 +411,7 @@ Document build output path in README when first build is exported.
 
 ---
 
-## 12. Verification checklist
+## 13. Verification checklist
 
 Before marking Level01 “playable”, confirm:
 
@@ -403,3 +440,31 @@ For the current level-loop milestone, verify:
 - [ ] Kill zone restores collectable progress
 
 Log results in [Assets/Documentation/TESTLOG.md](Assets/Documentation/TESTLOG.md).
+
+---
+
+## 14. Walkway end caps *(deferred until blockout complete)*
+
+**When:** After P3–P4 layout is in place and `Ground` / `Ceiling` final length is set (spawn through exit door).
+
+**Why:** Finite ground/ceiling sprites let the player walk off the ends and fall out of the play space. Invisible vertical colliders at the **left and right edges** of the walkable strip block that without code changes.
+
+**Not using for now:** Camera X bounds only move the view; kill zones on the sides punish with respawn instead of blocking.
+
+### Place left and right caps
+
+1. `Create Empty` → `LevelBounds_Left` and `LevelBounds_Right`
+2. Each object: **Box Collider 2D** (not trigger), **Layer** = `Ground` (same as floor/ceiling walkables for player collision)
+3. No sprite required (or disable `SpriteRenderer`)
+4. Position each wall on the **outer edge** of the finished ground/ceiling span:
+   - For a platform with centre `x`, scale `S`: left edge ≈ `x - S/2`, right edge ≈ `x + S/2`
+   - Example (current placeholder): centre `0`, scale `38` → edges near `x = ±19`
+5. Collider size: thin in X (e.g. `0.5`), tall in Y (e.g. `16`) so both floor and ceiling routes hit the wall when inverted
+6. Nudge X slightly outside the platform edge (e.g. `±19.5`) so the player cannot slip past
+
+### Verify (after blockout)
+
+- [ ] Walking into the left/right end on **ground** stops movement; no fall off-screen
+- [ ] Same on **ceiling** with inverted gravity
+- [ ] Jump puzzles, pits, and shuttle platform path still reachable
+- [ ] Left cap is not inside the spawn safe zone in a way that traps the player
