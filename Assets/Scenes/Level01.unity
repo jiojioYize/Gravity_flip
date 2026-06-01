@@ -526,6 +526,7 @@ GameObject:
   - component: {fileID: 484432784}
   - component: {fileID: 484432783}
   - component: {fileID: 484432782}
+  - component: {fileID: 484432787}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -552,6 +553,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   groundCheckDistance: 0.08
+  leaveSupportSpeedThreshold: 1
+  platformInteractionBlockDuration: 0.25
   gravityController: {fileID: 85580285}
   audioManager: {fileID: 0}
 --- !u!61 &484432783
@@ -693,6 +696,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &484432787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 484432781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebc9343fd0c92b84ea560463980762bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gravityController: {fileID: 0}
 --- !u!1 &534654736
 GameObject:
   m_ObjectHideFlags: 0
@@ -1031,8 +1047,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bd9c3084eeefcd4e990d2cb318d354e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
+  moveSpeed: 2
   moveDirection: {x: 1, y: 0}
+  gravityController: {fileID: 0}
 --- !u!61 &632825265
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1166,8 +1183,8 @@ Transform:
   m_GameObject: {fileID: 632825262}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.38, y: -1.32, z: 0}
-  m_LocalScale: {x: 3.5218, y: 0.7288, z: 1}
+  m_LocalPosition: {x: -3.3426, y: -1.2115, z: 0}
+  m_LocalScale: {x: 5.4471684, y: 0.5119091, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

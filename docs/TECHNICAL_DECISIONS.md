@@ -145,3 +145,15 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 **Alternatives considered:** Parenting; platform velocity added to `body.velocity`; `MovePosition` strafe before platform move; side collisions ignored globally; top-only child colliders.
 
 **Result / follow-up:** P1 milestone verified in Unity Editor Play Mode (commit `445cef3`). See [TESTLOG.md](../Assets/Documentation/TESTLOG.md). C2 on platform and corridor blockout continue in P2–P4.
+
+---
+
+### 2026-06-01 — Horizontal camera follow for linear Level01
+
+**Decision:** Add `CameraFollow2D` on `Main Camera`: **horizontal scroll only** by default (`lockVerticalPosition` uses the camera’s placed world Y; `useRelativeHorizontalFollow` moves X by player delta from start so spawn framing is preserved). Optional `SmoothDamp`, offset, and min/max bounds.
+
+**Reason:** After P1 verification, the level is wider than one screen. Following both X and Y pulled the authored ceiling/floor out of frame. Relative X follow keeps the original vertical composition while the player progresses right.
+
+**Alternatives considered:** Cinemachine package; fixed wide orthographic size only; full X+Y follow to player position (rejected after playtest feedback).
+
+**Result / follow-up:** Script revised after framing feedback; Play Mode verification pending (see SETUP.md section 10).

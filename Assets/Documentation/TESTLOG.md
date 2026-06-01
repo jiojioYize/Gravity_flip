@@ -43,6 +43,9 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-05-31 | Editor scripts only | Side contact should not stick to moving platform | P1 passed but player was carried when touching platform left/right edges | `MovingPlatformContact` uses collision normal vs gravity; register/carry only on walkable top/bottom | Pending Play Mode retest |
 | 2026-05-31 | Unity Editor Play Mode | Walkable-only platform carry | After normal-based filter, platform no longer carried player on top | Contact normal sign differs per callback body; use abs alignment + gravity cast fallback onto platform collider | Pending retest |
 | 2026-05-31 | Unity Editor Play Mode (`445cef3`) | Final shuttle platform: carry, strafe, jump, flip, despawn, walkable-only contact | No issues reported — stand on top carries; side bumps do not; inverted-gravity bottom contact OK | Abs normal alignment + gravity cast fallback on `MovingPlatformContact` | Pass |
+| 2026-06-01 | Editor scripts only | `CameraFollow2D` on Main Camera for linear Level01 | Script and `SETUP.md` section 10 added; target bound in Inspector | Ready for Play Mode verification | Pass |
+| 2026-06-01 | Unity Editor Play Mode | `CameraFollow2D` first version (follow X and Y) | Ceiling/ground framing shifted; scene felt vertically offset | Default to locked Y and relative horizontal follow; keep authored camera height | Pass |
+| 2026-06-01 | Unity Editor Play Mode | `CameraFollow2D` locked Y + relative horizontal follow | Horizontal scroll OK; ceiling/ground framing matches authored layout | `lockVerticalPosition`, `useRelativeHorizontalFollow`, offset `(0,0)` on Main Camera | Pass |
 
 ---
 

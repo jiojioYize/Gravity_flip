@@ -36,7 +36,7 @@ Current / planned layout in `Assets/`:
 
 ```
 Scenes/           *(pending)*
-Scripts/Core/     `GravityController`
+Scripts/Core/     `GravityController`, `CameraFollow2D`, `GameManager`, `ProgressManager`
 Scripts/Player/   `PlayerController2D`
 Scripts/Level/    `Collectible`, `ExitDoor`, `KillZone`, `MovingPlatform2D`, `ShuttlePlatformController`, `PlatformCorridorExitTrigger`
 Scripts/UI/       `GameplayHUD`
@@ -59,7 +59,8 @@ Create pending folders when their first asset or script is added.
 
 ### Camera
 
-- Main Camera: Orthographic, size ~5–6, background colour of choice
+- Main Camera: Orthographic, size ~5–6 (or ~8 if the level feels tight before follow is added), background colour of choice
+- Add `CameraFollow2D` — see [section 10](#10-camera-follow-2d-implemented--requires-unity-binding)
 
 ### Level geometry
 
@@ -326,7 +327,44 @@ Collectable 2 on the platform and full corridor art are **P2–P4**; P1 only nee
 
 ---
 
-## 10. Build settings *(pending — Week 2)*
+## 10. Camera follow 2D *(implemented — requires Unity binding)*
+
+Linear `Level01` is wider than one screen. `CameraFollow2D` scrolls **horizontally only** so your placed ceiling and floor heights stay framed; the camera does not chase the player on Y by default.
+
+### Add the component
+
+1. Select **Main Camera** in `Hierarchy`
+2. **Add Component** → `CameraFollow2D`
+3. Assign **Target** → `Player` (or leave empty — finds `PlayerController2D` at runtime)
+4. Suggested starting values:
+
+| Field | Suggested | Notes |
+|-------|-----------|-------|
+| Lock Vertical Position | on | Keeps **Main Camera** Y where you placed it in the scene (e.g. `y = -3`) |
+| Follow Y | off | Turn on only if you intentionally want the view to move up/down with the player |
+| Use Relative Horizontal Follow | on | At spawn, camera stays at your authored X; it moves only as the player moves left/right |
+| Offset | `0, 0` first | Try X `2` later if you want more view to the right |
+| Follow X | on | |
+| Smooth Follow | on | |
+| Smooth Time | `0.12` | Lower = snappier; raise if motion feels laggy |
+| Use Bounds | off until level limits are set | Optional clamp so the camera does not show empty space past the level |
+
+### Optional bounds (after blockout is stable)
+
+1. Enable **Use Bounds**
+2. Set **Min Position** / **Max Position** to the world X/Y range you want the camera centre to stay within (account for **Offset** when tuning)
+3. Typical for Level01: min X near the left spawn area, max X near the exit door
+
+### Verify
+
+- [ ] Play Mode: moving right keeps the player in view; you can see platforms and hazards ahead
+- [ ] Ceiling and floor still appear at the same heights as before follow was added (Lock Vertical Position on)
+- [ ] No jitter worse than before (if so, try Smooth Time `0.15`–`0.2` or disable Smooth Follow)
+- [ ] Kill-zone respawn / `R` reset: camera catches up to spawn
+
+---
+
+## 11. Build settings *(pending — Week 2)*
 
 1. File → Build Settings
 2. Add `Level01` (and `MainMenu` if implemented) to Scenes In Build
@@ -336,7 +374,7 @@ Document build output path in README when first build is exported.
 
 ---
 
-## 11. Verification checklist
+## 12. Verification checklist
 
 Before marking Level01 “playable”, confirm:
 
