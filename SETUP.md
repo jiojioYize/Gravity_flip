@@ -193,7 +193,7 @@ Assign `GameManager` references:
 5. Place it where the player must use gravity flip to reach it
 6. Leave `Progress Manager` empty if there is only one `ProgressManager` in the scene, or assign it manually
 
-The `Collectible` script sets its collider to trigger at runtime.
+The `Collectible` script sets its collider to trigger at runtime. For **C4 only**, enable **Require Active Shuttle Run** (see [section 16](#16-spike-corridor-collectable-4-and-exit--p4-implemented--requires-unity-blockout)).
 
 ### Exit door
 
@@ -367,7 +367,7 @@ Implements [GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 11.7: C2 rides on the
 - [ ] `R` or kill zone: progress resets; C2 hidden again until C1 is collected and a new run starts
 - [ ] P1 loop still works (carry, strafe, jump, flip, corridor despawn)
 
-**P3** adds Collectable 3 and the pit hazard (section 15). **P4** adds the spike corridor and C4.
+**P3** adds Collectable 3 and the pit hazard (section 15). **P4** adds the spike corridor and C4 (section 16).
 
 ---
 
@@ -441,6 +441,91 @@ Before final end caps ([section 14](#14-walkway-end-caps-deferred-until-blockout
 - [ ] Intended route: shuttle → C2 → dismount/jump → collect C3 over pit → can continue right toward corridor
 - [ ] Cannot skip C3 and reach the corridor on foot without collecting (blockout check)
 - [ ] P1 shuttle loop and P2 C2 still work
+
+---
+
+## 16. Spike corridor, Collectable 4, and exit — P4 *(implemented — requires Unity blockout)*
+
+Implements [GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Sections 11.9–11.10: a **spike corridor** reached during an **active shuttle run**; **C4** collected with a **timed jump** after flipping to the platform underside and entering the corridor, then **dismount** on safe ground and walk to the **exit** at `4/4`.
+
+**Scripts:** `KillZone` for corridor hazards (unified **Death Clip**); `Collectible` with optional **Require Active Shuttle Run** for C4 (allows jump pickup while the run is active — not while standing on foot before C1); existing `PlatformCorridorExitTrigger` and `ExitDoor`.
+
+### Layout (left → right)
+
+```text
+… C3 pit … → [corridor: floor+ceiling hazards, no on-foot floor] → corridor exit trigger → safe ground → ExitDoor
+                              ↑ C4 (in jump range during active run)
+```
+
+| Marker | Draft X | Notes |
+|--------|---------|-------|
+| Corridor span | ~15 – 17 | No continuous walkable `Ground` through this span |
+| `PlatformCorridorExit` | 17+ | Move right if the corridor is wider |
+| `ExitDoor` | ~18+ | On safe ground **after** the corridor |
+| `ShuttleSpawnPoint` | -18 | Unchanged |
+
+### A. Spike corridor (blockout)
+
+1. Create empty parent `CorridorHazards` (optional, for organisation)
+2. **Remove or gap** walkable ground under the corridor — the player cannot run through on foot
+3. **Floor spikes / kill:**
+   - `KillZone_CorridorFloor` — **Box Collider 2D**, **Is Trigger**, **`KillZone`**
+   - Cover the corridor floor band (e.g. `y` near `-9`, width ≈ corridor length)
+   - Red spike sprites optional (**Layer** `Hazard`, no script)
+4. **Ceiling spikes / kill:**
+   - `KillZone_CorridorCeiling` — same pattern along the ceiling band (e.g. `y` near `4–5`)
+   - Punishes trying to walk the corridor on the ceiling route without the platform
+5. **Side bounds:** keep the corridor wide enough for the shuttle sprite + player on top or bottom
+
+Touching either kill volume uses the same **Death Clip** as other hazards.
+
+### B. Collectable 4
+
+1. `2D Object > Sprites > Square` → **`Collectable4`**
+2. Place **inside the corridor** at **jump height** relative to the underside route (tune X/Y in Scene view with Play Mode)
+3. Visible at level start; distinct colour (e.g. purple)
+4. **Box Collider 2D** + **`Collectible`**
+5. Enable **`Require Active Shuttle Run`** on `Collectible` (C4 only — C1/C3 leave this off). This blocks pickup on foot when no run is active; it does **not** require staying on the platform collider when the jump connects.
+6. **Audio:** unified **Collect Clip** on `AudioManager` (no per-object clip)
+
+**Intended pickup:**
+
+1. After C3, board the shuttle for a new run.
+2. As the platform approaches the corridor, **flip gravity** (Shift) so you are on the **underside** of the platform.
+3. Enter the **spike corridor** with the platform still moving (floor/ceiling kill zones active).
+4. **Jump** (Space) when C4 is within range — timing matters; you may leave the platform surface briefly to touch the collectable trigger.
+5. Land safely or remount if needed; clear the corridor before despawn at `PlatformCorridorExit`.
+
+### C. Corridor exit and safe dismount
+
+1. Confirm **`PlatformCorridorExit`** trigger spans the corridor height at the **right end**; platform collider must enter it before despawn
+2. Beyond the exit, add **`Ground_Exit`** (walkable strip) so the player can land after despawn/fall
+3. **Boarding rule (spatial design):** safe ground to the **right** of the corridor should not let the player re-board in time for another corridor pass after missing C4 (per GAME_CONCEPT §11.9). Use gap, height step, or later a blocker — full end caps in [section 14](#14-walkway-end-caps-deferred-until-blockout-complete)
+
+### D. Exit door
+
+1. Place **`ExitDoor`** on `Ground_Exit` to the right of the corridor
+2. Stays **locked** until HUD shows **`Keys 4/4`**
+3. Touch door → **Door Unlock** + **Level Complete** clips (if assigned)
+
+### E. Progress and win
+
+- HUD at load: **`Keys 0/4`** with C1–C4 all active in the hierarchy
+- Win requires at least one gravity flip elsewhere in the level (existing design rule)
+- Full route: C1 → shuttle/C2 → C3 → shuttle/C4 in corridor → dismount → door
+
+### Verify P4 (Play Mode)
+
+- [ ] On-foot entry to the corridor triggers death (floor/ceiling kill zones)
+- [ ] C4 **cannot** be collected on foot before a shuttle run (`Require Active Shuttle Run` on)
+- [ ] C4 **can** be collected with a **timed jump** in the corridor during an active run (underside gravity, inside spike zone)
+- [ ] Missing C4, then leaving the corridor on the right, cannot be fixed by waiting for the next shuttle run (design check)
+- [ ] `PlatformCorridorExit` still ends the run; player on board falls; loop from the left works
+- [ ] At `4/4`, exit unlocks and level completes
+- [ ] `R` / kill zone reset still clears all four keys and shuttle state
+- [ ] P1–P3 behaviour unchanged
+
+After P4 blockout is stable, add walkway **end caps** ([section 14](#14-walkway-end-caps-deferred-until-blockout-complete)) and run [section 13](#13-verification-checklist) for the full level.
 
 ---
 

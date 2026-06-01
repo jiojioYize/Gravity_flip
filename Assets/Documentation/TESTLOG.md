@@ -50,6 +50,8 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-06-01 | Unity Editor Play Mode | P2 Collectable 2 on shuttle platform | Hidden before C1; appears each run; collect on top or ceiling-drop boarding; miss then retry next run; reset/`R` clears C2 until C1 again | `PlatformBoundCollectible` + run events; P1 loop unchanged | Pass |
 | 2026-06-01 | Editor / docs | P3 Collectable 3 + pit hazard blockout guide | C3 + `KillZone` reuse; SETUP section 15 | Split ground, `Collectable3`, `KillZone_C3Pit` | Pass |
 | 2026-06-01 | Unity Editor Play Mode | P3 shuttle dismount, jump over pit, collect C3 | Collect/death SFX unified; forward route toward corridor | Ground gap + lips; P1/P2 unchanged | Pass |
+| 2026-06-01 | Editor / code | P4 corridor + C4 `requireActiveShuttleRun` | Replaced platform-contact gate; jump timing collect during active run | SETUP §16, GAME_CONCEPT §11.9 corrected after playtest | Pass |
+| 2026-06-01 | Unity Editor Play Mode | P4 timed jump C4 in spike corridor | Flip under platform → enter corridor → jump to C4; `4/4` exit | Docs previously described passive ride-through collect | Pass |
 
 ---
 
@@ -57,7 +59,7 @@ Record playtests here. The final report will reference this file for testing and
 
 | Issue | Workaround until fixed | Planned fix |
 |-------|------------------------|-------------|
-| Walking past the left/right end of finite `Ground` / `Ceiling` lets the player fall out of the play space | Avoid hugging platform ends during testing | Invisible end-cap colliders after P4 blockout ([SETUP.md](../SETUP.md) section 14) |
+| Walking past the left/right end of finite `Ground` / `Ceiling` lets the player fall out of the play space | Avoid hugging platform ends during testing | Invisible end-cap colliders after P4 dimensions locked ([SETUP.md](../SETUP.md) section 14) |
 
 ---
 

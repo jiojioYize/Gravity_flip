@@ -214,7 +214,7 @@ The level is a **single linear route**. After the player moves past a section, *
 | **C1** | Near ceiling, centre-left area | Yes | Teach ceiling path + second flip + diagonal fall |
 | **C2** | On the shuttle platform (moves with it) | Only when platform is active | Teach timing + boarding from ceiling + landing on a moving surface |
 | **C3** | Fixed on ground, right of C2 segment | Yes | Teach jump from platform, horizontal clearance over pit/spike hazard |
-| **C4** | Fixed in air, lower height inside spike corridor | Yes | Teach upside-down / under-platform collection during corridor transit |
+| **C4** | Fixed in air, jump height inside spike corridor | Yes | Timed jump from under-platform (inverted gravity) during an active shuttle run through the corridor |
 
 Collectable 2 is **not** visible at level start; it appears and disappears with the platform.
 
@@ -269,8 +269,9 @@ Collectable 2 is **not** visible at level start; it appears and disappears with 
 
 **Collection:**
 
-- C4 is placed **low in the corridor**, intended to be collected from **below the platform** (inverted gravity / underside route — align with implementation in SETUP).
-- The player must collect C4 **during** the platform transit **through** the corridor (on board, while C4 trigger is valid).
+- Use the shuttle run to reach the corridor. **Flip gravity** so the player is on the **underside** of the platform, then enter the spike corridor with the moving platform.
+- C4 sits in the corridor at a position inside **jump range** (not auto-collected by riding through the trigger).
+- The player must **time a jump** into C4 while the shuttle **run is still active** (platform moving through the corridor). Missing the jump or touching spikes uses normal death / reset rules.
 
 **Why missing C4 is permanent without `R` (spatial logic):**
 
@@ -315,7 +316,7 @@ This is intentional: a **planning / commitment** mistake, not an arbitrary colle
 | **P1** | `MovingPlatform2D`, spawn after C1, left→right path, despawn only after corridor exit trigger, player carry + fall on despawn |
 | **P2** | C2 on platform, top/bottom boarding, loop runs for practice |
 | **P3** | C3 placement, jump-down from platform, hazard clearance |
-| **P4** | C4 corridor colliders, underside collect trigger, safe dismount + walk to door; full playtest |
+| **P4** | C4 corridor colliders, timed jump collect during active shuttle run, safe dismount + walk to door; full playtest |
 
 Editor setup steps will be added to [SETUP.md](../SETUP.md) as each phase is implemented.
 
@@ -325,7 +326,7 @@ Editor setup steps will be added to [SETUP.md](../SETUP.md) as each phase is imp
 2. Complete C1 — flip, diagonal collect, avoid hazard below.
 3. Explain shuttle platform appears; collect C2 on a run (optional: miss once, show next run).
 4. Dismount, collect C3 over pit hazard.
-5. Board for corridor, collect C4 from under-platform route.
+5. Board for corridor; flip under the platform, enter the spike zone, and **jump** to collect C4 on timing.
 6. Dismount, flip down, enter door at `4/4`.
 7. Optional: show kill reset and `R` after a deliberate mistake at C4.
 

@@ -184,6 +184,18 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 
 ---
 
+### P4 — Spike corridor, Collectable 4, and level complete
+
+**Decision:** P4 is Editor blockout plus **`requireActiveShuttleRun`** on C4’s `Collectible`: pickup only while `ShuttlePlatformController.IsRunActive`. Corridor uses `KillZone` triggers on floor/ceiling bands (unified death SFX); no walkable ground through the span. C4 is a **timed jump** collect after flipping to the platform underside and entering the spike corridor — not passive trigger overlap while riding.
+
+**Reason:** Playtest clarified the route: flip under the platform, enter the hazard corridor during the run, then jump into C4. Requiring platform **contact** at pickup blocked that jump. Active-run gating still prevents collecting C4 on foot at level start while allowing mid-air pickup.
+
+**Alternatives considered:** `requireMovingPlatformContact` (rejected after playtest — conflicts with jump timing); child C4 on platform (rejected — fixed position per design).
+
+**Result / follow-up:** Blockout in [SETUP.md](../SETUP.md) section 16; [GAME_CONCEPT.md](GAME_CONCEPT.md) §11.9 updated. End caps (section 14) after final dimensions.
+
+---
+
 ### 2026-06-01 — Walkway end caps deferred until blockout
 
 **Decision:** Fix “walk off finite ground/ceiling ends” with **invisible BoxCollider2D end walls** on the `Ground` layer at the left/right edges of the final walkway span. **Do not add** until P3–P4 blockout is done and `Ground` / `Ceiling` length is final.
