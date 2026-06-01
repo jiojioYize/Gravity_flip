@@ -48,6 +48,8 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-06-01 | Unity Editor Play Mode | `CameraFollow2D` locked Y + relative horizontal follow | Horizontal scroll OK; ceiling/ground framing matches authored layout | `lockVerticalPosition`, `useRelativeHorizontalFollow`, offset `(0,0)` on Main Camera | Pass |
 | 2026-06-01 | Editor scripts only | P2 `PlatformBoundCollectible` + shuttle run events | C2 hidden until run; reappears each run if missed; top/bottom boarding unchanged from P1 | `Collectable2` child on `ShuttlePlatform` with `BoxCollider2D` per `SETUP.md` section 10 | Pass |
 | 2026-06-01 | Unity Editor Play Mode | P2 Collectable 2 on shuttle platform | Hidden before C1; appears each run; collect on top or ceiling-drop boarding; miss then retry next run; reset/`R` clears C2 until C1 again | `PlatformBoundCollectible` + run events; P1 loop unchanged | Pass |
+| 2026-06-01 | Editor / docs | P3 Collectable 3 + pit hazard blockout guide | C3 + `KillZone` reuse; SETUP section 15 | Split ground, `Collectable3`, `KillZone_C3Pit` | Pass |
+| 2026-06-01 | Unity Editor Play Mode | P3 shuttle dismount, jump over pit, collect C3 | Collect/death SFX unified; forward route toward corridor | Ground gap + lips; P1/P2 unchanged | Pass |
 
 ---
 
@@ -55,7 +57,7 @@ Record playtests here. The final report will reference this file for testing and
 
 | Issue | Workaround until fixed | Planned fix |
 |-------|------------------------|-------------|
-| Walking past the left/right end of finite `Ground` / `Ceiling` lets the player fall out of the play space | Avoid hugging platform ends during testing | Invisible end-cap colliders after P3–P4 blockout ([SETUP.md](../SETUP.md) section 14) |
+| Walking past the left/right end of finite `Ground` / `Ceiling` lets the player fall out of the play space | Avoid hugging platform ends during testing | Invisible end-cap colliders after P4 blockout ([SETUP.md](../SETUP.md) section 14) |
 
 ---
 
@@ -70,3 +72,4 @@ _Use this section for quick reference when writing the report._
 - Audio and polish feedback passed manual Unity Editor verification: jump, flip, collect, death, door unlock, level complete, and level reset sounds; flip screen flash on gravity change; `R` resets player state without using death SFX path incorrectly.
 - P1 shuttle platform passed manual Unity Editor verification: spawns after C1, moves left→right, carries player on walkable surfaces only (not side bumps), A/D strafe, jump, single Shift flip (`Fire3`), corridor despawn and respawn loop, kill/`R` reset behaviour unchanged.
 - P2 Collectable 2 on shuttle platform passed manual Unity Editor verification (2026-06-01): C2 hidden until C1 and an active run; pickup on moving platform; retry on next run if missed; progress and reset behaviour correct.
+- P3 Collectable 3 and pit hazard passed manual Unity Editor verification (2026-06-01): split ground gap, pit kill zone, jump-from-shuttle route, unified collect/death SFX, progress toward corridor.

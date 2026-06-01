@@ -70,6 +70,7 @@ https://kenney.nl
 - Clips are assigned on `--- Managers ---` → `AudioManager` in `Level01`.
 - Empty `AudioManager` slots are skipped at runtime (no error).
 - When replacing a clip, update this document and Inspector assignments together.
+- **Unified policy:** all `Collectible` objects share **Collect Clip**; all `KillZone` objects share **Death Clip** on `AudioManager`.
 
 ---
 

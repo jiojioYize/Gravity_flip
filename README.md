@@ -14,7 +14,7 @@ A 2D puzzle platformer where you flip your character's gravity — not the world
 | Game scripts | In progress — movement, gravity, level loop, HUD, P1 shuttle + P2 C2 (verified 2026-06-01), `CameraFollow2D` |
 | HUD (in-game) | Done — progress, gravity direction, control hints |
 | Audio and polish | Done — SFX, flip flash, `R` reset (Kenney CC0 clips in Unity) |
-| Level 01 scene | In progress — C1 + P1 shuttle + P2 C2 verified; P3–P4 layout pending ([GAME_CONCEPT.md](docs/GAME_CONCEPT.md#11-level01--detailed-level-design-approved), [SETUP.md](SETUP.md#10-collectable-2-on-shuttle-platform--p2-implemented--requires-unity-binding)) |
+| Level 01 scene | In progress — C1–C3 + P1–P3 verified (2026-06-01); **P4** corridor + C4 pending ([GAME_CONCEPT.md](docs/GAME_CONCEPT.md#11-level01--detailed-level-design-approved), [SETUP.md](SETUP.md)) |
 | Playable build | Planned |
 
 ---

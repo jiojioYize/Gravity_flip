@@ -172,6 +172,18 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 
 ---
 
+### P3 — Collectable 3 and pit hazard (Editor blockout)
+
+**Decision:** P3 uses existing `Collectible` and `KillZone` only — fixed **Collectable3** visible at load, ground gap with **KillZone_C3Pit** trigger, split ground lips for jump-from-shuttle / jump-right clearance. Unified **Collect Clip** and **Death Clip** on `AudioManager`.
+
+**Reason:** No new systems needed; P3 is level design and verification of shuttle dismount → aerial clearance → forward-only route before the P4 corridor.
+
+**Alternatives considered:** Per-hazard audio overrides (rejected — unified SFX policy); custom pit script (rejected — `KillZone` is sufficient).
+
+**Result / follow-up:** Verified in Unity Editor Play Mode on 2026-06-01. See [TESTLOG.md](../Assets/Documentation/TESTLOG.md). P4 spike corridor and C4 next.
+
+---
+
 ### 2026-06-01 — Walkway end caps deferred until blockout
 
 **Decision:** Fix “walk off finite ground/ceiling ends” with **invisible BoxCollider2D end walls** on the `Ground` layer at the left/right edges of the final walkway span. **Do not add** until P3–P4 blockout is done and `Ground` / `Ceiling` length is final.

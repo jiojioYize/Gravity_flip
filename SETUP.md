@@ -230,8 +230,8 @@ When the player enters the kill zone, the player respawns, gravity resets to nor
 |---------------|---------------|
 | Jump Clip | Jump |
 | Flip Clip | Gravity flip |
-| Collect Clip | Pick up collectable |
-| Death Clip | Kill zone respawn |
+| Collect Clip | **All** collectables (C1, C2, C3, C4) — one shared sound |
+| Death Clip | **All** `KillZone` hazards — one shared sound |
 | Door Unlock Clip | Exit turns green |
 | Level Complete Clip | Touch exit after unlock |
 | Level Reset Clip | Press `R` (optional; leave empty if none) |
@@ -256,9 +256,15 @@ When the player enters the kill zone, the player respawns, gravity resets to nor
 9. Assign **Flash Image** → `FlipFlashOverlay`
 10. **Gravity Controller** → `--- Managers ---` (or leave empty)
 
+### Unified SFX policy
+
+- **Collectables:** only assign **Collect Clip** on `AudioManager`. Every `Collectible` (C1, C2, …) plays that clip automatically — no per-object audio fields.
+- **Hazards:** only assign **Death Clip** on `AudioManager`. Every `KillZone` uses it via `GameManager.RespawnPlayer()`.
+
 ### Verify polish
 
 - [ ] Jump / flip / collect / death / door unlock / level complete play when clips are assigned
+- [ ] **C1** and **C2** both play the same collect sound
 - [ ] `R` resets player, progress, and gravity (reset sound optional)
 - [ ] Flip shows a brief screen flash
 - [ ] HUD bottom text mentions `R Reset`
@@ -344,6 +350,7 @@ Implements [GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 11.7: C2 rides on the
    - **Shuttle Controller**: drag `ShuttlePlatform` (or leave empty)
    - **Pickup Renderer** / **Pickup Collider**: drag the components on `Collectable2` (or leave empty — auto-fills)
 9. Keep the **GameObject active** in the hierarchy (script hides renderer/collider until a run starts)
+10. **Audio:** no extra setup — C2 uses the same **Collect Clip** as C1 on `--- Managers ---` → `AudioManager` (see [section 8](#8-audio-and-polish-feedback-implemented--bind-if-setting-up-a-new-scene))
 
 ### Progress and naming
 
@@ -360,7 +367,80 @@ Implements [GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 11.7: C2 rides on the
 - [ ] `R` or kill zone: progress resets; C2 hidden again until C1 is collected and a new run starts
 - [ ] P1 loop still works (carry, strafe, jump, flip, corridor despawn)
 
-C3 placement and corridor blockout are **P3–P4**.
+**P3** adds Collectable 3 and the pit hazard (section 15). **P4** adds the spike corridor and C4.
+
+---
+
+## 15. Collectable 3 and pit hazard — P3 *(implemented — verified 2026-06-01)*
+
+Implements [GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 11.8: **C3** is visible from level start, sits on the **forward route** after the shuttle segment and **before** the C4 corridor, above a **ground pit** the player clears with a planned jump (often: ride shuttle → dismount → jump right over the gap → collect C3 → continue toward the corridor).
+
+**Scripts:** reuse `Collectible` (pickup + unified collect SFX) and `KillZone` (unified death SFX). No new gameplay code for P3.
+
+### Layout goals (left → right)
+
+```text
+… shuttle track (C2) … → dismount zone → [C3 over pit] → safe ground → C4 corridor (P4) → door
+```
+
+Reference positions in the current `Level01` draft (tune in Scene view):
+
+| Marker | Approx. world X | Notes |
+|--------|-----------------|-------|
+| `ShuttleSpawnPoint` | -18 | Platform run starts |
+| C3 pit / collect zone | 10 – 14 | Between shuttle path and `PlatformCorridorExit` |
+| `PlatformCorridorExit` | 17 | Move **further right** if the pit needs more space before the corridor |
+
+### A. Split ground and add the pit
+
+1. Duplicate or slice the bottom `Ground` into two walkable strips with a **gap** (no collider in the gap):
+   - `Ground_C3_Left` — left lip (approach from shuttle / on foot)
+   - `Ground_C3_Right` — right lip (landing after the jump)
+2. Gap width: start around **3–5** units; player must **jump from the left lip or from a dismounted shuttle** and move **right** in the air to reach the right lip or C3.
+3. Optional red spike sprites in the gap (**Layer** `Hazard`, **no** extra script) for readability only.
+
+### B. Kill zone in the pit
+
+1. `Create Empty` → `KillZone_C3Pit` (child under a `Hazards` empty if you like)
+2. **Layer:** `Hazard` (or default — must still trigger player)
+3. Add **Box Collider 2D**, enable **Is Trigger**
+4. Stretch the box to fill the gap and extend **below** the play line (same idea as the existing `KillZone` under the level)
+5. Add **`KillZone`** script (`Game Manager` can stay empty)
+6. **Physics 2D:** `Player` must collide with triggers (default)
+
+Falling into the pit plays **Death Clip** and respawns at `SpawnPoint` with progress reset.
+
+### C. Collectable 3
+
+1. `2D Object > Sprites > Square` → rename **`Collectable3`**
+2. Place on or just above the **right lip** or mid-air over the pit so a **rightward jump** from the shuttle/left lip collects it while clearing the hazard (tune Y ≈ ground height + 1–2)
+3. Distinct colour (e.g. green)
+4. **Box Collider 2D** + **`Collectible`** (same as C1)
+5. Leave active at load — **visible from start**; HUD should show **`Keys 0/3`** until C4 exists (**`0/4`** later)
+
+### D. Shuttle / platform tuning for the jump
+
+1. After C1, ride the shuttle and collect C2 (P2)
+2. **Dismount** while the platform is still on the left/mid track (jump off) **before** the pit, or time a jump from the platform edge toward C3
+3. If the jump is too hard: lower gap width, raise `Jump Speed` slightly on `Player`, or add a small `Ground_C3_Mid` lip (only if design allows)
+4. Ensure the platform track still reaches `PlatformCorridorExit` for P4 (corridor may move right)
+
+### E. One-way route (no backtracking)
+
+Before final end caps ([section 14](#14-walkway-end-caps-deferred-until-blockout-complete)):
+
+- Do **not** leave a flat walk back from the right lip to re-collect C1/C2 without `R`
+- Options: raised right lip, low tunnel, or a **short blocker** past C3 so returning left is impossible
+- Missing C3 after passing the pit is recovered with **`R`**, not another shuttle run from the wrong side
+
+### Verify P3 (Play Mode)
+
+- [ ] HUD **`0/3`** (or `0/4` with C4) at start; C3 visible before C1
+- [ ] C3 pickup uses the same **Collect Clip** as C1/C2
+- [ ] Pit triggers **Death Clip** and full respawn (gravity down, progress reset)
+- [ ] Intended route: shuttle → C2 → dismount/jump → collect C3 over pit → can continue right toward corridor
+- [ ] Cannot skip C3 and reach the corridor on foot without collecting (blockout check)
+- [ ] P1 shuttle loop and P2 C2 still work
 
 ---
 
