@@ -54,14 +54,15 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-06-01 | Unity Editor Play Mode | P4 timed jump C4 in spike corridor | Flip under platform → enter corridor → jump to C4; `4/4` exit | Docs previously described passive ride-through collect | Pass |
 | 2026-06-03 | Unity Editor Play Mode | `LevelBackdrop2D` + vertical framing | No blue letterboxing at sides; left edge needs **Min X** not Max X | `SETUP.md` section 17 | Pass |
 | 2026-06-03 | Unity Editor Play Mode | HUD screen-space lock (`HudScreenAnchor`) | Overlay canvas; progress/gravity/controls fixed to screen at level ends | `SETUP.md` sections 5 and 18 | Pass |
+| 2026-06-03 | Unity Editor Play Mode | Camera `Use Bounds` + walkway end caps | Horizontal view clamped; player blocked at ground/ceiling ends | `SETUP.md` sections 14 and 17 | Pass |
+| 2026-06-03 | Unity Editor Play Mode | Full Level01 playthrough (§11.14) | C1→C2→C3→C4→door; kill/`R` reset; end caps and bounds OK | GAME_CONCEPT demo route | Pass |
+| 2026-06-03 | Editor fix | `GameplayHUD` controls hint shows `R Reset` | `Controls Label` on Canvas is source of truth; `OnValidate` syncs to `ControlsText` | Verified in Play Mode | Pass |
 
 ---
 
 ## Known issues (open)
 
-| Issue | Workaround until fixed | Planned fix |
-|-------|------------------------|-------------|
-| Walking past the left/right end of finite `Ground` / `Ceiling` lets the player fall out of the play space | Avoid hugging platform ends during testing | Invisible end-cap colliders after P4 dimensions locked ([SETUP.md](../SETUP.md) section 14) |
+_None blocking the Level01 vertical slice after end caps and full playthrough verification (2026-06-03)._
 
 ---
 
@@ -79,3 +80,4 @@ _Use this section for quick reference when writing the report._
 - P3 Collectable 3 and pit hazard passed manual Unity Editor verification (2026-06-01): split ground gap, pit kill zone, jump-from-shuttle route, unified collect/death SFX, progress toward corridor.
 - Level backdrop and camera framing passed manual Unity Editor verification (2026-06-03): `LevelBackdrop2D` Min/Max tuning; camera background matched; left gap resolved by extending **Min X**.
 - HUD screen-space layout passed manual Unity Editor verification (2026-06-03): `HudScreenAnchor` on Overlay canvas; labels stay fixed while camera scrolls.
+- Level01 end caps, camera bounds, and full demo-route playthrough passed manual Unity Editor verification (2026-06-03).

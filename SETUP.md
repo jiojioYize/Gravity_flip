@@ -147,7 +147,8 @@ HUD must stay **fixed on the screen** while the world camera scrolls. Use **Scre
 1. Select `Canvas`
 2. `Add Component` → `GameplayHUD`
 3. Assign **Progress Text**, **Gravity Text**, **Controls Text** (drag the `Text` components)
-4. Save scene (`Ctrl + S`)
+4. Set **Controls Label** on `GameplayHUD` (this string is copied to `ControlsText` at Play Mode — editing only the `Text` component is overwritten)
+5. Save scene (`Ctrl + S`)
 
 **If HUD moves with the level camera:** `Canvas` Render Mode was changed — set back to **Screen Space - Overlay**.
 
@@ -621,7 +622,7 @@ Log results in [Assets/Documentation/TESTLOG.md](Assets/Documentation/TESTLOG.md
 
 ---
 
-## 14. Walkway end caps *(deferred until blockout complete)*
+## 14. Walkway end caps *(verified 2026-06-03)*
 
 **When:** After P3–P4 layout is in place and `Ground` / `Ceiling` final length is set (spawn through exit door).
 
