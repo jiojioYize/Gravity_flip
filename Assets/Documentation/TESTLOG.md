@@ -52,6 +52,8 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-06-01 | Unity Editor Play Mode | P3 shuttle dismount, jump over pit, collect C3 | Collect/death SFX unified; forward route toward corridor | Ground gap + lips; P1/P2 unchanged | Pass |
 | 2026-06-01 | Editor / code | P4 corridor + C4 `requireActiveShuttleRun` | Replaced platform-contact gate; jump timing collect during active run | SETUP §16, GAME_CONCEPT §11.9 corrected after playtest | Pass |
 | 2026-06-01 | Unity Editor Play Mode | P4 timed jump C4 in spike corridor | Flip under platform → enter corridor → jump to C4; `4/4` exit | Docs previously described passive ride-through collect | Pass |
+| 2026-06-03 | Unity Editor Play Mode | `LevelBackdrop2D` + vertical framing | No blue letterboxing at sides; left edge needs **Min X** not Max X | `SETUP.md` section 17 | Pass |
+| 2026-06-03 | Unity Editor Play Mode | HUD screen-space lock (`HudScreenAnchor`) | Overlay canvas; progress/gravity/controls fixed to screen at level ends | `SETUP.md` sections 5 and 18 | Pass |
 
 ---
 
@@ -75,3 +77,5 @@ _Use this section for quick reference when writing the report._
 - P1 shuttle platform passed manual Unity Editor verification: spawns after C1, moves left→right, carries player on walkable surfaces only (not side bumps), A/D strafe, jump, single Shift flip (`Fire3`), corridor despawn and respawn loop, kill/`R` reset behaviour unchanged.
 - P2 Collectable 2 on shuttle platform passed manual Unity Editor verification (2026-06-01): C2 hidden until C1 and an active run; pickup on moving platform; retry on next run if missed; progress and reset behaviour correct.
 - P3 Collectable 3 and pit hazard passed manual Unity Editor verification (2026-06-01): split ground gap, pit kill zone, jump-from-shuttle route, unified collect/death SFX, progress toward corridor.
+- Level backdrop and camera framing passed manual Unity Editor verification (2026-06-03): `LevelBackdrop2D` Min/Max tuning; camera background matched; left gap resolved by extending **Min X**.
+- HUD screen-space layout passed manual Unity Editor verification (2026-06-03): `HudScreenAnchor` on Overlay canvas; labels stay fixed while camera scrolls.

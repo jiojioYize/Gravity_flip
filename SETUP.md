@@ -36,10 +36,10 @@ Current / planned layout in `Assets/`:
 
 ```
 Scenes/           *(pending)*
-Scripts/Core/     `GravityController`, `CameraFollow2D`, `GameManager`, `ProgressManager`
+Scripts/Core/     `GravityController`, `CameraFollow2D`, `LevelBackdrop2D`, `GameManager`, `ProgressManager`
 Scripts/Player/   `PlayerController2D`
 Scripts/Level/    `Collectible`, `PlatformBoundCollectible`, `ExitDoor`, `KillZone`, `MovingPlatform2D`, `ShuttlePlatformController`, `PlatformCorridorExitTrigger`
-Scripts/UI/       `GameplayHUD`
+Scripts/UI/       `GameplayHUD`, `HudScreenAnchor`, `HudPanel`, `FlipScreenFlash`
 Scripts/Audio/    `AudioManager`
 Prefabs/          *(pending)*
 Sprites/          *(pending)*
@@ -108,51 +108,63 @@ Align with [docs/GAME_CONCEPT.md](docs/GAME_CONCEPT.md) Section 2:
 
 ## 5. UI canvas *(implemented — bind if setting up a new scene)*
 
+HUD must stay **fixed on the screen** while the world camera scrolls. Use **Screen Space - Overlay** (not World Space, not Screen Space - Camera unless you know why).
+
 ### Create canvas
 
 1. In `Hierarchy`, right-click → `UI` → `Canvas`
 2. Unity may auto-create `EventSystem`; keep it if present
-3. Select `Canvas`; in `Inspector` confirm **Render Mode** = `Screen Space - Overlay`
+3. Select `Canvas`; in `Inspector`:
+   - **Render Mode** = `Screen Space - Overlay`
+   - **Canvas Scaler → UI Scale Mode** = `Scale With Screen Size`
+   - **Reference Resolution** = `1920 x 1080` (or your target)
+   - **Match** = `0.5` (balance width/height)
+4. Optional: create empty child **`HudRoot`** under `Canvas` (organises panels only)
 
 ### Progress text (top-left)
 
-1. Right-click `Canvas` → `UI` → `Text`
+1. Right-click `Canvas` (or `HudRoot`) → `UI` → `Text`
 2. Rename to `ProgressText`
-3. Set **Anchor Preset**: top-left (hold `Alt` + click top-left preset)
-4. Set **Pos X** `20`, **Pos Y** `-20`
-5. Set **Text** to `Keys 0/1` (placeholder)
-6. Set **Font Size** `24`, **Color** white (or readable on your background)
+3. **Add Component** → `HudScreenAnchor` → **Preset** = `Top Left`, **Margin** `(24, 24)`
+4. Or manually: Anchor preset top-left (`Alt` + click), **Pivot** top-left, **Pos** about `(24, -24)`
+5. **Text** `Keys 0/4` (placeholder), **Font Size** `24`, light colour
 
 ### Gravity text (top-right)
 
-1. Right-click `Canvas` → `UI` → `Text`
-2. Rename to `GravityText`
-3. Anchor preset: top-right (`Alt` + top-right)
-4. **Pos X** `-20`, **Pos Y** `-20`
-5. **Text** `Gravity: Down` (placeholder)
-6. **Font Size** `24`
+1. Right-click → `UI` → `Text` → rename `GravityText`
+2. **Hud Screen Anchor** → `Top Right`, margin `(24, 24)`
+3. **Text** `Gravity: Down`, **Font Size** `24`, **Alignment** right
 
 ### Controls text (bottom)
 
-1. Right-click `Canvas` → `UI` → `Text`
-2. Rename to `ControlsText`
-3. Anchor preset: bottom-center (`Alt` + bottom-center)
-4. **Pos X** `0`, **Pos Y** `20`
-5. **Text** `A/D Move  |  Space Jump  |  Shift Flip Gravity` (placeholder)
-6. **Font Size** `20`
-7. **Alignment**: center
+1. Right-click → `UI` → `Text` → rename `ControlsText`
+2. **Hud Screen Anchor** → `Bottom Center`, margin `(0, 20)` (Y = distance from bottom edge)
+3. **Text** control hints, **Font Size** `18`–`20`, **Alignment** center
+4. If text is clipped on narrow windows: enable **Best Fit** or shorten the string
 
 ### GameplayHUD component
 
 1. Select `Canvas`
 2. `Add Component` → `GameplayHUD`
-3. Assign references:
-   - **Progress Manager**: drag `--- Managers ---` (or leave empty if only one in scene)
-   - **Gravity Controller**: drag `--- Managers ---`
-   - **Progress Text**: drag `ProgressText`
-   - **Gravity Text**: drag `GravityText`
-   - **Controls Text**: drag `ControlsText`
+3. Assign **Progress Text**, **Gravity Text**, **Controls Text** (drag the `Text` components)
 4. Save scene (`Ctrl + S`)
+
+**If HUD moves with the level camera:** `Canvas` Render Mode was changed — set back to **Screen Space - Overlay**.
+
+### Art-ready panels (optional, for later sprites)
+
+Replace bare `Text` with a small block you can skin:
+
+```text
+Canvas (Overlay)
+└── ProgressPanel          ← empty + RectTransform + HudScreenAnchor (Top Left)
+    ├── PanelBackground    ← UI → Image (9-slice Kenney panel; disable until art imported)
+    └── ProgressText       ← Text (GameplayHUD still references this)
+```
+
+Repeat for `GravityPanel` / `ControlsPanel`. Add **`HudPanel`** on the parent; assign **Background Image** + **Value Text**. Later: drop a sprite on the Image only — `GameplayHUD` unchanged.
+
+See [section 18](#18-hud-screen-lock--art-swap) for the full swap workflow.
 
 At runtime, progress updates when collectables are picked up or reset; gravity label updates on flip and after kill-zone respawn.
 
@@ -550,6 +562,7 @@ Linear `Level01` is wider than one screen. `CameraFollow2D` scrolls **horizontal
 | Smooth Follow | on | |
 | Smooth Time | `0.12` | Lower = snappier; raise if motion feels laggy |
 | Use Bounds | off until level limits are set | Optional clamp so the camera does not show empty space past the level |
+| Fit Play Area On Start | optional | See [section 17](#17-visual-framing--reduce-out-of-bounds-views) |
 
 ### Optional bounds (after blockout is stable)
 
@@ -633,3 +646,115 @@ Log results in [Assets/Documentation/TESTLOG.md](Assets/Documentation/TESTLOG.md
 - [ ] Same on **ceiling** with inverted gravity
 - [ ] Jump puzzles, pits, and shuttle platform path still reachable
 - [ ] Left cap is not inside the spawn safe zone in a way that traps the player
+
+---
+
+## 17. Visual framing — reduce out-of-bounds views *(verified 2026-06-03)*
+
+**Symptom:** When scrolling left/right, you see the **top/bottom edges** of the ground and ceiling strips and the **blue camera background** beyond them — looks unfinished.
+
+**Cause:** `Main Camera` **Orthographic Size** is larger than the floor–ceiling band, and walkable sprites **end** before the backdrop on the sides.
+
+### A. Level backdrop (recommended)
+
+1. `2D Object > Sprites > Square` → rename **`LevelBackdrop`**
+2. Move it to the **bottom** of `Hierarchy` (drawn behind gameplay)
+3. **Add Component** → `LevelBackdrop2D`
+4. Set **Sorting Order** `-100` on the `Sprite Renderer` (script also applies this)
+5. Set bounds **wider/taller** than gameplay (example for current Level01 draft):
+
+| Field | Example | Notes |
+|-------|---------|-------|
+| Min X | -24 | Past spawn / left end |
+| Max X | 24 | Past exit |
+| Min Y | -12 | Below floor art |
+| Max Y | 7 | Above ceiling art |
+| Backdrop Color | dark grey-blue | Match or darken **Main Camera** background |
+
+6. **Main Camera** → **Background** colour: same family as backdrop (hides letterboxing if a sliver still shows)
+
+No collider on the backdrop — visual only.
+
+### B. Tighter vertical camera (optional)
+
+On **Main Camera** → `CameraFollow2D`:
+
+1. Enable **Fit Play Area On Start**
+2. Set **Play Area Top Y** / **Play Area Bottom Y** to your `Ceiling` / floor centre Y (e.g. `5` and `-10`)
+3. **Vertical Padding** `0.5`–`1` (breathing room above ceiling and below floor)
+4. Play Mode once — **Orthographic Size** and locked Y adjust automatically
+
+Or manually: lower **Orthographic Size** (try `7`–`7.5`) and set camera **Y** to the midpoint between floor and ceiling.
+
+### C. Horizontal sides
+
+- Backdrop **Min/Max X** should extend past the leftmost/rightmost **visible** ground/ceiling ends.
+- Gameplay **end caps** ([section 14](#14-walkway-end-caps-deferred-until-blockout-complete)) stop the player; backdrop stops the eye.
+
+### D. Optional camera X bounds
+
+When level length is final, enable **Use Bounds** on `CameraFollow2D` so the view does not scroll into empty backdrop-only regions beyond the exit.
+
+### Verify
+
+- [ ] No bright empty strips above ceiling or below floor while playing
+- [ ] At left/right scroll, sides look like a continuous “tunnel” rather than platforms floating on blue
+- [ ] Gameplay colliders unchanged (backdrop has no collider)
+
+---
+
+## 18. HUD screen lock + art swap
+
+### Why HUD must not follow the world camera
+
+| Render Mode | Behaviour |
+|-------------|-----------|
+| **Screen Space - Overlay** ✅ | Drawn on top of the Game view; **fixed** to screen edges |
+| Screen Space - Camera | Moves/scales with assigned camera — can drift or clip when framing changes |
+| World Space | Lives in the level; **will** scroll off screen |
+
+Your gameplay HUD (keys, gravity, controls) should always use **Overlay**.
+
+### Fix checklist (if text “runs away”)
+
+1. **Canvas → Render Mode** = `Screen Space - Overlay`
+2. **Canvas Scaler** = `Scale With Screen Size`, reference `1920×1080`, Match `0.5`
+3. Each HUD element: **`HudScreenAnchor`** or manual anchors to **corners / bottom center**, not world positions
+4. Do **not** parent `Canvas` under `Player` or `Main Camera`
+5. Play Mode: move to level left/right — text stays in the same **screen** corners
+
+### Recommended hierarchy (art-ready)
+
+```text
+Canvas
+├── ProgressPanel      (HudScreenAnchor: Top Left)
+│   ├── PanelBackground   Image — optional 9-slice sprite
+│   └── ProgressText      Text  ← GameplayHUD reference
+├── GravityPanel       (HudScreenAnchor: Top Right)
+│   ├── PanelBackground
+│   └── GravityText
+└── ControlsPanel      (HudScreenAnchor: Bottom Center)
+    ├── PanelBackground
+    └── ControlsText
+```
+
+- **`HudPanel`** on each `*Panel` object: wire **Background Image** + **Value Text**
+- **`GameplayHUD`** still references the three **Text** components (no code change when adding panels)
+
+### Swapping text → art later
+
+| Step | Action |
+|------|--------|
+| 1 | Import Kenney UI / your panel PNGs into `Assets/UI/` |
+| 2 | Texture Type **Sprite (2D and UI)**; enable **9-slice** borders on wide panels |
+| 3 | On `PanelBackground` **Image**: assign sprite, set **Image Type** = `Sliced` |
+| 4 | Keep **Text** as child, centred on the panel; tune font size/colour for contrast |
+| 5 | Optional: replace `Text` with **TextMeshPro** later — update `GameplayHUD` references once |
+
+Icons (key icon, gravity arrow) can sit as sibling **Image** objects under the same panel; `GameplayHUD` only drives the string labels unless you extend it later.
+
+### Verify
+
+- [ ] Left/right/end of level: HUD stays on screen
+- [ ] Resize Game view aspect ratio: anchors keep margin from edges
+- [ ] Panel sprites can be toggled on without breaking progress/gravity updates

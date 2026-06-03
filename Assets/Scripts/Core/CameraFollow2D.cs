@@ -23,6 +23,12 @@ namespace GravityFlip.Core
         [SerializeField] private Vector2 minPosition;
         [SerializeField] private Vector2 maxPosition;
 
+        [Header("Vertical framing (optional)")]
+        [SerializeField] private bool fitPlayAreaOnStart;
+        [SerializeField] private float playAreaTopY = 5f;
+        [SerializeField] private float playAreaBottomY = -10f;
+        [SerializeField] private float verticalPadding = 0.6f;
+
         private float initialCameraX;
         private float initialTargetX;
         private float lockedWorldY;
@@ -45,7 +51,28 @@ namespace GravityFlip.Core
 
         private void Start()
         {
+            if (fitPlayAreaOnStart)
+            {
+                ApplyPlayAreaVerticalFraming();
+            }
+
             CaptureInitialPositions();
+        }
+
+        public void ApplyPlayAreaVerticalFraming()
+        {
+            Camera cameraComponent = GetComponent<Camera>();
+            if (cameraComponent == null || !cameraComponent.orthographic)
+            {
+                return;
+            }
+
+            float centerY = (playAreaTopY + playAreaBottomY) * 0.5f;
+            float halfSpan = (playAreaTopY - playAreaBottomY) * 0.5f + verticalPadding;
+
+            cameraComponent.orthographicSize = halfSpan;
+            lockedWorldY = centerY;
+            fixedWorldY = centerY;
         }
 
         private void LateUpdate()

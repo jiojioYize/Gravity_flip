@@ -196,6 +196,28 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 
 ---
 
+### Visual framing — backdrop and optional camera fit
+
+**Decision:** Add `LevelBackdrop2D` (scaled sprite rectangle behind gameplay) and optional `CameraFollow2D.fitPlayAreaOnStart` to match orthographic size to the floor–ceiling band. Document tuning in SETUP section 17.
+
+**Reason:** Horizontal follow exposes finite ground/ceiling ends and default orthographic size (~8.9) shows camera clear colour above/below the play strip — breaks immersion.
+
+**Alternatives considered:** Only shrink orthographic size manually (still need side cover); UI letterbox bars; infinite ground sprites (rejected — collider scope).
+
+**Result / follow-up:** `LevelBackdrop2D` + Min/Max tuning verified in Play Mode; left gap fixed by lowering **Min X** (not Max X). See SETUP section 17.
+
+---
+
+### HUD screen-space lock and art-ready panels
+
+**Decision:** Keep HUD on **Screen Space - Overlay** with corner/bottom **`HudScreenAnchor`** (or equivalent RectTransform anchors). Optional **`HudPanel`** wrapper (Image + Text) per block so UI sprites swap without touching `GameplayHUD` logic.
+
+**Reason:** World camera scroll and vertical framing must not move gameplay hints; Overlay UI is independent of `CameraFollow2D`. Panel wrapper separates data (`GameplayHUD` strings) from presentation (sprites).
+
+**Alternatives considered:** World Space HUD parented to player (rejected); Screen Space - Camera (rejected for this project); immediate TextMeshPro migration (deferred).
+
+---
+
 ### 2026-06-01 — Walkway end caps deferred until blockout
 
 **Decision:** Fix “walk off finite ground/ceiling ends” with **invisible BoxCollider2D end walls** on the `Ground` layer at the left/right edges of the final walkway span. **Do not add** until P3–P4 blockout is done and `Ground` / `Ceiling` length is final.
