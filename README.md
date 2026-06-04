@@ -14,8 +14,9 @@ A 2D puzzle platformer where you flip your character's gravity — not the world
 | Game scripts | In progress — movement, gravity, level loop, HUD, P1 shuttle + P2 C2 (verified 2026-06-01), `CameraFollow2D` |
 | HUD (in-game) | Done — progress, gravity direction, control hints |
 | Audio and polish | Done — SFX, flip flash, `R` reset (Kenney CC0 clips in Unity) |
-| Level 01 scene | In progress — P1–P3 verified; **P4** corridor + C4 + exit ([SETUP.md](SETUP.md#16-spike-corridor-collectable-4-and-exit--p4-implemented--requires-unity-blockout)); full playtest after blockout ([GAME_CONCEPT.md](docs/GAME_CONCEPT.md#11-level01--detailed-level-design-approved)) |
-| Playable build | Planned |
+| Level 01 scene | Done — P1–P4 verified; full demo route C1→C4→door (2026-06-03). See [GAME_CONCEPT.md](docs/GAME_CONCEPT.md) §11.14 |
+| Game flow UI | Implemented in code — `MainMenu`, Esc pause, win panel; quiet death. **Verify in Unity.** See [SETUP.md](SETUP.md#19-game-flow-ux-ux-1-to-ux-3--implemented-in-code) |
+| Playable build | Build Settings configured (`MainMenu` → `Level01`); export after UX verify |
 
 ---
 
@@ -26,7 +27,7 @@ A 2D puzzle platformer where you flip your character's gravity — not the world
 | Move left / right | `A` / `D` or arrow keys |
 | Jump | `Space` |
 | Flip gravity | `Left Shift` |
-| Pause | `Esc` *(stretch)* |
+| Pause | `Esc` |
 | Reset level | `R` |
 
 Control hints will also appear in-game on the HUD.

@@ -81,3 +81,6 @@ _Use this section for quick reference when writing the report._
 - Level backdrop and camera framing passed manual Unity Editor verification (2026-06-03): `LevelBackdrop2D` Min/Max tuning; camera background matched; left gap resolved by extending **Min X**.
 - HUD screen-space layout passed manual Unity Editor verification (2026-06-03): `HudScreenAnchor` on Overlay canvas; labels stay fixed while camera scrolls.
 - Level01 end caps, camera bounds, and full demo-route playthrough passed manual Unity Editor verification (2026-06-03).
+- **Design record (2026-06-03, not playtested):** Scoped game flow UX approved — UX-1 MainMenu + Start, UX-2 Esc pause, UX-3 win panel; death remains quiet respawn (no Game Over screen). See `docs/TECHNICAL_DECISIONS.md` and `SETUP.md` §19.
+- **Implementation (code in repo, Play Mode not run by agent):** `MainMenu.unity`, `MainMenuController`, `GameFlowController` (runtime pause/win UI), Build Settings MainMenu → Level01. Pending user verification per `SETUP.md` §19 checklist.
+- Game flow UX (MainMenu, Esc pause, win panel, menu copy) passed manual Unity Editor verification (2026-06-04): Start loads Level01; pause/instructions buttons readable; story copy updated; quiet death unchanged.

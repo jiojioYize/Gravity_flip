@@ -3416,7 +3416,7 @@ MonoBehaviour:
   progressLabel: Keys
   gravityDownLabel: 'Gravity: Down'
   gravityUpLabel: 'Gravity: Up'
-  controlsLabel: A/D <-/-> Move | Space Jump | Shift Flip Gravity | R Reset
+  controlsLabel: A/D <-/-> Move | Space Jump | Shift Flip | R Reset | Esc Pause
 --- !u!114 &1815179904
 MonoBehaviour:
   m_ObjectHideFlags: 0

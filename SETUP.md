@@ -580,11 +580,14 @@ Linear `Level01` is wider than one screen. `CameraFollow2D` scrolls **horizontal
 
 ---
 
-## 12. Build settings *(pending — Week 2)*
+## 12. Build settings
 
-1. File → Build Settings
-2. Add `Level01` (and `MainMenu` if implemented) to Scenes In Build
-3. Platform: PC, Mac & Linux Standalone (or as module requires)
+Scenes in build (repo default):
+
+1. `Assets/Scenes/MainMenu.unity` — index **0**
+2. `Assets/Scenes/Level01.unity` — index **1**
+
+To confirm in Editor: **File → Build Settings**. Platform: PC, Mac & Linux Standalone (or as module requires).
 
 Document build output path in README when first build is exported.
 
@@ -759,3 +762,60 @@ Icons (key icon, gravity arrow) can sit as sibling **Image** objects under the s
 - [ ] Left/right/end of level: HUD stays on screen
 - [ ] Resize Game view aspect ratio: anchors keep margin from edges
 - [ ] Panel sprites can be toggled on without breaking progress/gravity updates
+
+---
+
+## 19. Game flow UX (UX-1 to UX-3 — implemented in code)
+
+**Status:** Scripts and scenes are in the repo. UI is built at **runtime** (no manual pause/win panels in Level01). **Play Mode verification pending** in Unity Editor.
+
+| Script | Role |
+|--------|------|
+| `MainMenuController` | `Assets/Scenes/MainMenu.unity` — story + **Start** → `Level01` |
+| `GameFlowController` | Auto-added on `--- Managers ---` via `GameManager` — Esc pause, win overlay |
+| `OverlayUiBuilder` | Shared runtime UI helpers |
+
+**Build Settings:** `MainMenu` index **0**, `Level01` index **1** (see `ProjectSettings/EditorBuildSettings.asset`).
+
+### How it works
+
+- **UX-1:** Open `MainMenu` scene or press Play with Build Settings order — **Start** loads `Level01`.
+- **UX-2:** In Level01, **Esc** opens pause (`timeScale = 0`). **Resume** / **Instructions** / **Main menu**. Esc again from Instructions returns to pause menu.
+- **UX-3:** On level complete, `GameManager` shows win panel — **Play again** reloads `Level01`, **Main menu** loads `MainMenu`.
+- **Death:** Unchanged — quiet respawn, no fail modal.
+
+### Optional tuning (Inspector)
+
+- **MainMenu** object: edit `titleText`, `storyText`, `levelSceneName` on `MainMenuController`. If Play still shows an old story blurb, select **MainMenu** and check **Story Text** in the Inspector (scene values override script defaults). `menuCopyVersion` 2 is the current bundled copy; older scenes auto-update on Play once.
+- **--- Managers ---** → `Game Flow Controller`: edit `instructionsText`, scene names if renamed.
+
+### If MainMenu is missing or shows “Missing Script”
+
+This usually means an old hand-written `MainMenu.unity` could not be imported by Unity (file on disk but not a valid scene asset). The repo no longer ships that file — you generate it once from the Editor menu below.
+
+1. Wait for Unity to finish compiling (Console has no red script errors).
+2. **Stop Play Mode** (Play button must be off — this menu cannot run while playing).
+3. Top menu: **Gravity Flip → Create or Fix Main Menu Scene**.
+4. In **Project**, open `Assets/Scenes/MainMenu.unity` — Hierarchy should show **MainMenu** with **Main Menu Controller** (not “Missing”).
+5. Optional: **Gravity Flip → Add Scenes To Build Settings**.
+6. If an old broken `MainMenu` object remains in Hierarchy: select it → **Remove Component** (Missing) → **Add Component** → **Main Menu Controller**.
+
+You do **not** need to hand-build Canvas or buttons; `MainMenuController` creates UI at runtime.
+
+**Edit mode:** The **Inspector** shows script fields only (`titleText`, `storyText`). Title, story, and **Start** appear in the **Game** view after you press **Play** (`MainMenuController` builds UI at runtime).
+
+**EventSystem:** `Level01` keeps its scene `EventSystem`. `MainMenu` creates one only in Play Mode if none exists. Delete stray duplicate `EventSystem` objects in the Hierarchy if an older build left them behind.
+
+### Editor quick test
+
+1. Open `Assets/Scenes/MainMenu.unity` → **Play** → **Start** → play Level01.
+2. Or open `Level01` directly (skips menu; flow overlays still work).
+3. **File → Build Settings** — confirm both scenes listed (already configured in repo).
+
+### Verify (check after Play Mode)
+
+- [ ] MainMenu → Start → Level01
+- [ ] Esc pause freezes movement; Resume restores
+- [ ] Instructions panel readable; Esc returns to pause
+- [ ] Win panel after all keys + exit; Play again and Main menu work
+- [ ] Death quiet respawn; `R` uses reset SFX (not death clip)

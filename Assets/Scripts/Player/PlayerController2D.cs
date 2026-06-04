@@ -1,6 +1,7 @@
 using GravityFlip.Audio;
 using GravityFlip.Core;
 using GravityFlip.Level;
+using GravityFlip.UI;
 using UnityEngine;
 
 namespace GravityFlip.Player
@@ -101,6 +102,13 @@ namespace GravityFlip.Player
 
         private void Update()
         {
+            if (GameFlowController.IsGameplayBlocked)
+            {
+                horizontalInput = 0f;
+                jumpRequested = false;
+                return;
+            }
+
             horizontalInput = Input.GetAxisRaw("Horizontal");
 
             if (Input.GetButtonDown("Jump"))
@@ -121,6 +129,11 @@ namespace GravityFlip.Player
 
         private void FixedUpdate()
         {
+            if (GameFlowController.IsGameplayBlocked)
+            {
+                return;
+            }
+
             if (jumpRequested)
             {
                 TryJump();

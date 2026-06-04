@@ -1,5 +1,6 @@
 using GravityFlip.Audio;
 using GravityFlip.Player;
+using GravityFlip.UI;
 using UnityEngine;
 
 namespace GravityFlip.Core
@@ -12,6 +13,7 @@ namespace GravityFlip.Core
         [SerializeField] private GravityController gravityController;
         [SerializeField] private ProgressManager progressManager;
         [SerializeField] private AudioManager audioManager;
+        [SerializeField] private GameFlowController gameFlow;
 
         public bool IsLevelComplete { get; private set; }
 
@@ -36,10 +38,25 @@ namespace GravityFlip.Core
             {
                 audioManager = FindObjectOfType<AudioManager>();
             }
+
+            if (gameFlow == null)
+            {
+                gameFlow = GetComponent<GameFlowController>();
+            }
+
+            if (gameFlow == null)
+            {
+                gameFlow = gameObject.AddComponent<GameFlowController>();
+            }
         }
 
         private void Update()
         {
+            if (GameFlowController.IsGameplayBlocked)
+            {
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.R))
             {
                 ResetLevel();
@@ -66,6 +83,7 @@ namespace GravityFlip.Core
 
             IsLevelComplete = true;
             audioManager?.PlayLevelComplete();
+            gameFlow?.ShowWinPanel();
             Debug.Log("Level complete.");
         }
 

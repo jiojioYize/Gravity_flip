@@ -84,17 +84,34 @@ flowchart LR
 
 | Priority | Feature | Status |
 |----------|---------|--------|
-| A | Main menu, Esc pause | Pending |
+| A | Main menu, Esc pause, win panel (scoped UX-1–3) | Implemented — Unity verification pending |
 | A | `R` to reset level | Done |
 | B | Multiple collectables with distinct flip paths | Planned — Level01 design (Section 11) |
 | C | BGM | Pending |
 | C | SFX + flip screen flash | Done |
 | D | Kenney art pass for platforms / hazards | Pending |
 
+### Game flow (scoped stretch — approved 2026-06-03)
+
+Player journey for the vertical slice (placeholder UI first; art swap later):
+
+```text
+MainMenu → [short story] + Start button → Level01
+              ↳ Esc: Resume | Instructions | Main menu
+              ↳ Death: quiet respawn (SFX + reset), no Game Over screen
+              ↳ Win: simple panel → Play again | Main menu
+```
+
+- **Death:** Quiet respawn only (team preference). Distinct from **`R`** reset (reset SFX, no death SFX).
+- **Not in this slice:** Auto-start without button, full-screen failure modal, quit-game as primary flow.
+
+See [SETUP.md](../SETUP.md) section 19 and [TECHNICAL_DECISIONS.md](TECHNICAL_DECISIONS.md).
+
 ### Out of scope (unless time remains)
 
 - Second full level, enemy AI, complex scripted cutscenes
 - Multiplayer, save system, mobile build
+- Full-screen Game Over on kill zone
 
 **Rationale:** Assessment rewards a **complete, tested vertical slice** over feature count. A single strong level with clear flip-dependent puzzles matches the module example of “one memorable mechanic, one polished level”.
 

@@ -226,4 +226,26 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 
 **Alternatives considered:** Extend platforms only (still need end caps at level extremities); side kill zones (respawn punishment); `CameraFollow2D` bounds (camera only); runtime X clamp on player.
 
-**Result / follow-up:** Documented in [SETUP.md](../SETUP.md) section 14. Revisit before final Level01 playtest / export.
+**Result / follow-up:** Verified in Play Mode (2026-06-03). See [SETUP.md](../SETUP.md) section 14 and [TESTLOG.md](../Assets/Documentation/TESTLOG.md).
+
+---
+
+### Scoped game flow UI (stretch — approved, not yet implemented)
+
+**Decision:** After Level01 baseline (P1–P4) verification, add a **trimmed** player journey in three implementation steps (no art assets required for first pass):
+
+1. **UX-1 — `MainMenu` scene:** Short story blurb (2–4 sentences) + **Start** button → `SceneManager.LoadScene("Level01")`. No auto-skip-only entry; button required for demos and clarity.
+2. **UX-2 — Pause overlay in Level01:** `Esc` toggles pause (`Time.timeScale = 0`); panels: **Resume**, **Instructions** (full controls + level goal), **Return to main menu**. Legacy Input Manager only.
+3. **UX-3 — Win overlay:** On `GameManager.CompleteLevel()`, show a simple panel: **Play again** (reload `Level01` or reset state) and **Main menu**.
+
+**Death / failure UX:** Keep **quiet respawn** — existing kill-zone behaviour (death SFX, respawn at `SpawnPoint`, gravity down, progress reset). **No** full-screen failure or Game Over modal. Optional future: one-line HUD hint only; not in scope for UX-1–3.
+
+**Explicitly out of this stretch slice:** Auto-enter level without Start; full-screen death popup; `Application.Quit` as primary exit (optional later); BGM; multi-page story cinematics; art-dependent blocking.
+
+**Reason:** Matches [GAME_CONCEPT.md](GAME_CONCEPT.md) Stretch A and assessment focus: baseline gameplay is proven; flow UI improves presentation and report narrative without changing puzzle rules. Quiet death aligns with teaching-level loops and existing `R` reset (death SFX vs reset SFX).
+
+**Alternatives considered:** Full ideal flow in one milestone (menu + pause + exit + story + win + fail popups + art) — rejected as too large (~3–5 extra days) and asset-dependent; hard fail Game Over — rejected by team preference.
+
+**Architecture (planned):** Small `GameFlowController` (or extend `GameManager`) for panel visibility, pause gate on player input, and scene loads — separate from `ProgressManager` / `GameplayHUD` data paths. Placeholder Canvas panels (Image + Text + Button) until Kenney UI or custom sprites.
+
+**Result / follow-up:** Implemented in code (`MainMenuController`, `GameFlowController`, runtime `OverlayUiBuilder`). `MainMenu.unity` + Build Settings index 0. Level01 auto-attaches flow via `GameManager`. Play Mode verification pending — see [SETUP.md](../SETUP.md) section 19.
