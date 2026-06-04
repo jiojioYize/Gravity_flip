@@ -57,6 +57,8 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-06-03 | Unity Editor Play Mode | Camera `Use Bounds` + walkway end caps | Horizontal view clamped; player blocked at ground/ceiling ends | `SETUP.md` sections 14 and 17 | Pass |
 | 2026-06-03 | Unity Editor Play Mode | Full Level01 playthrough (§11.14) | C1→C2→C3→C4→door; kill/`R` reset; end caps and bounds OK | GAME_CONCEPT demo route | Pass |
 | 2026-06-03 | Editor fix | `GameplayHUD` controls hint shows `R Reset` | `Controls Label` on Canvas is source of truth; `OnValidate` syncs to `ControlsText` | Verified in Play Mode | Pass |
+| 2026-06-04 | Unity Editor Play Mode (`09d678e`) | Game flow UX: MainMenu Start → Level01; Esc pause (Resume, Instructions, Main menu); win panel (Play again, Main menu); updated story and instructions copy; menu button labels readable | Start button and EventSystem issues during setup; pause/win button text clipped until fixed-height menu buttons | `MainMenuController`, `GameFlowController`, `OverlayUiBuilder`; Build Settings; `menuCopyVersion` story migration | Pass |
+| 2026-06-04 | Design record (pre-playtest) | Scoped game flow UX (UX-1–3) and quiet death agreed | N/A — planning only | `TECHNICAL_DECISIONS.md`, `SETUP.md` §19 | N/A |
 
 ---
 
@@ -81,6 +83,4 @@ _Use this section for quick reference when writing the report._
 - Level backdrop and camera framing passed manual Unity Editor verification (2026-06-03): `LevelBackdrop2D` Min/Max tuning; camera background matched; left gap resolved by extending **Min X**.
 - HUD screen-space layout passed manual Unity Editor verification (2026-06-03): `HudScreenAnchor` on Overlay canvas; labels stay fixed while camera scrolls.
 - Level01 end caps, camera bounds, and full demo-route playthrough passed manual Unity Editor verification (2026-06-03).
-- **Design record (2026-06-03, not playtested):** Scoped game flow UX approved — UX-1 MainMenu + Start, UX-2 Esc pause, UX-3 win panel; death remains quiet respawn (no Game Over screen). See `docs/TECHNICAL_DECISIONS.md` and `SETUP.md` §19.
-- **Implementation (code in repo, Play Mode not run by agent):** `MainMenu.unity`, `MainMenuController`, `GameFlowController` (runtime pause/win UI), Build Settings MainMenu → Level01. Pending user verification per `SETUP.md` §19 checklist.
-- Game flow UX (MainMenu, Esc pause, win panel, menu copy) passed manual Unity Editor verification (2026-06-04): Start loads Level01; pause/instructions buttons readable; story copy updated; quiet death unchanged.
+- Game flow UX passed manual Unity Editor verification (2026-06-04, `09d678e`): MainMenu, Esc pause/instructions, win panel, updated copy; quiet death unchanged. See **Entries** table.
