@@ -1,13 +1,13 @@
 # Gravity Flip — Unity Editor Setup
 
-Step-by-step instructions for building scenes in the Unity Editor.  
-**This file is updated as features are implemented** — sections marked *(pending)* are not ready yet.
+Step-by-step instructions for building and verifying scenes in the Unity Editor.  
+**Status (2026-06):** Level01, MainMenu, scripts, and audio are implemented in the repo. Early sections are a **reference for new clones or rebuilds**; later sections document P1–P4, polish, and game-flow UX with verification checklists.
 
 Prerequisites: Unity **2022.3 LTS**, project opened from repository root.
 
 ---
 
-## 1. Project settings *(pending — do during Week 1 D1–2)*
+## 1. Project settings *(implemented — verify on a fresh clone)*
 
 ### Tags and layers
 
@@ -30,27 +30,25 @@ Alternatively use a single `Walkable` layer for ground + ceiling if ground check
 
 ---
 
-## 2. Folder layout *(partially complete)*
-
-Current / planned layout in `Assets/`:
+## 2. Folder layout *(current)*
 
 ```
-Scenes/           *(pending)*
-Scripts/Core/     `GravityController`, `CameraFollow2D`, `LevelBackdrop2D`, `GameManager`, `ProgressManager`
-Scripts/Player/   `PlayerController2D`
-Scripts/Level/    `Collectible`, `PlatformBoundCollectible`, `ExitDoor`, `KillZone`, `MovingPlatform2D`, `ShuttlePlatformController`, `PlatformCorridorExitTrigger`
-Scripts/UI/       `GameplayHUD`, `HudScreenAnchor`, `HudPanel`, `FlipScreenFlash`
-Scripts/Audio/    `AudioManager`
-Prefabs/          *(pending)*
-Sprites/          *(pending)*
-Audio/            *(pending)*
+Assets/
+  Scenes/           MainMenu.unity, Level01.unity
+  Scripts/Core/     GravityController, CameraFollow2D, LevelBackdrop2D, GameManager, ProgressManager
+  Scripts/Player/   PlayerController2D, PlatformRider2D
+  Scripts/Level/    Collectible, PlatformBoundCollectible, ExitDoor, KillZone, MovingPlatform2D, …
+  Scripts/UI/       GameplayHUD, MainMenuController, GameFlowController, OverlayUiBuilder, …
+  Scripts/Audio/    AudioManager
+  Audio/            Kenney CC0 clips (.ogg)
+  Documentation/    TESTLOG.md
 ```
 
-Create pending folders when their first asset or script is added.
+`Prefabs/` and `Sprites/` are optional — Level01 uses scene objects and built-in square sprites with Inspector colours.
 
 ---
 
-## 3. Level01 scene *(pending — Week 1 D4+)*
+## 3. Level01 scene *(implemented — reference for rebuild or tuning)*
 
 ### Create scene
 
@@ -767,7 +765,7 @@ Icons (key icon, gravity arrow) can sit as sibling **Image** objects under the s
 
 ## 19. Game flow UX (UX-1 to UX-3 — implemented in code)
 
-**Status:** Scripts and scenes are in the repo. UI is built at **runtime** (no manual pause/win panels in Level01). **Play Mode verification pending** in Unity Editor.
+**Status:** Implemented and verified in Play Mode (2026-06-04, commit `09d678e`). UI is built at **runtime** on MainMenu and via `GameFlowController` on Level01 (no hand-built pause/win panels in the scene).
 
 | Script | Role |
 |--------|------|
@@ -791,16 +789,14 @@ Icons (key icon, gravity arrow) can sit as sibling **Image** objects under the s
 
 ### If MainMenu is missing or shows “Missing Script”
 
-This usually means an old hand-written `MainMenu.unity` could not be imported by Unity (file on disk but not a valid scene asset). The repo no longer ships that file — you generate it once from the Editor menu below.
+The repo ships `Assets/Scenes/MainMenu.unity`. If the scene is broken on your machine, restore it from Git or rebuild manually:
 
 1. Wait for Unity to finish compiling (Console has no red script errors).
-2. **Stop Play Mode** (Play button must be off — this menu cannot run while playing).
-3. Top menu: **Gravity Flip → Create or Fix Main Menu Scene**.
-4. In **Project**, open `Assets/Scenes/MainMenu.unity` — Hierarchy should show **MainMenu** with **Main Menu Controller** (not “Missing”).
-5. Optional: **Gravity Flip → Add Scenes To Build Settings**.
-6. If an old broken `MainMenu` object remains in Hierarchy: select it → **Remove Component** (Missing) → **Add Component** → **Main Menu Controller**.
+2. **File → New Scene → Empty**, save as `Assets/Scenes/MainMenu.unity` (overwrite only if you have a backup).
+3. **Create Empty** → name `MainMenu` → **Add Component** → **Main Menu Controller**.
+4. **File → Build Settings** → add `MainMenu.unity` (index **0**) and `Level01.unity` (index **1**) if either is missing.
 
-You do **not** need to hand-build Canvas or buttons; `MainMenuController` creates UI at runtime.
+You do **not** need to hand-build Canvas or buttons; `MainMenuController` creates UI at runtime in Play Mode.
 
 **Edit mode:** The **Inspector** shows script fields only (`titleText`, `storyText`). Title, story, and **Start** appear in the **Game** view after you press **Play** (`MainMenuController` builds UI at runtime).
 
@@ -812,10 +808,21 @@ You do **not** need to hand-build Canvas or buttons; `MainMenuController` create
 2. Or open `Level01` directly (skips menu; flow overlays still work).
 3. **File → Build Settings** — confirm both scenes listed (already configured in repo).
 
-### Verify (check after Play Mode)
+### Verify (Play Mode — passed 2026-06-04)
 
-- [ ] MainMenu → Start → Level01
-- [ ] Esc pause freezes movement; Resume restores
-- [ ] Instructions panel readable; Esc returns to pause
-- [ ] Win panel after all keys + exit; Play again and Main menu work
-- [ ] Death quiet respawn; `R` uses reset SFX (not death clip)
+- [x] MainMenu → Start → Level01
+- [x] Esc pause freezes movement; Resume restores
+- [x] Instructions panel readable; Esc returns to pause
+- [x] Win panel after all keys + exit; Play again and Main menu work
+- [x] Death quiet respawn; `R` uses reset SFX (not death clip)
+
+### Level look and layout (Editor-owned)
+
+Sprites, tints, and hazard volumes are tuned in the **Inspector** on `Level01` (not driven by gameplay scripts). `KillZone` only handles death respawn and sets **Is Trigger** at runtime if the collider was left off.
+
+**If sprites go Missing** (e.g. after deleting asset folders): objects remain in Hierarchy — reassign sprites and colors per object, or restore `Level01.unity` from Git. Frame the Scene view with **Player** selected → **F**.
+
+### Before bulk art or scene-wide automation
+
+Commit or duplicate the scene first. Do not use editor tools that write into open scenes without understanding the risk: missing references, lost hand-tuned colors. Prefer manual Kenney swap per object (see section 2).
+

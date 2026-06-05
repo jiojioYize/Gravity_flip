@@ -84,12 +84,12 @@ flowchart LR
 
 | Priority | Feature | Status |
 |----------|---------|--------|
-| A | Main menu, Esc pause, win panel (scoped UX-1–3) | Implemented — Unity verification pending |
+| A | Main menu, Esc pause, win panel (scoped UX-1–3) | Done (verified 2026-06-04) |
 | A | `R` to reset level | Done |
-| B | Multiple collectables with distinct flip paths | Planned — Level01 design (Section 11) |
-| C | BGM | Pending |
+| B | Multiple collectables with distinct flip paths | Done — four keys, Level01 Section 11 (verified 2026-06-03) |
+| C | BGM | Pending (optional) |
 | C | SFX + flip screen flash | Done |
-| D | Kenney art pass for platforms / hazards | Pending |
+| D | Kenney art pass for platforms / hazards | Optional — manual per-object swap in Editor |
 
 ### Game flow (scoped stretch — approved 2026-06-03)
 
@@ -139,7 +139,7 @@ See [SETUP.md](../SETUP.md) section 19 and [TECHNICAL_DECISIONS.md](TECHNICAL_DE
 
 **Legal / ethical:** Only use assets with clear licenses; list every external asset in README before final submission. No copyrighted material without permission.
 
-**Accessibility:** Control hints always visible on HUD; planned keys shown in README and in-game.
+**Accessibility:** Control hints always visible on HUD; keys listed in README and in-game.
 
 ---
 

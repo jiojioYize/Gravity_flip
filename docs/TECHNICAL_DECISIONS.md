@@ -230,7 +230,7 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 
 ---
 
-### Scoped game flow UI (stretch — approved, not yet implemented)
+### 2026-06-04 — Scoped game flow UI (UX-1–3)
 
 **Decision:** After Level01 baseline (P1–P4) verification, add a **trimmed** player journey in three implementation steps (no art assets required for first pass):
 
@@ -246,6 +246,20 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 
 **Alternatives considered:** Full ideal flow in one milestone (menu + pause + exit + story + win + fail popups + art) — rejected as too large (~3–5 extra days) and asset-dependent; hard fail Game Over — rejected by team preference.
 
-**Architecture (planned):** Small `GameFlowController` (or extend `GameManager`) for panel visibility, pause gate on player input, and scene loads — separate from `ProgressManager` / `GameplayHUD` data paths. Placeholder Canvas panels (Image + Text + Button) until Kenney UI or custom sprites.
+**Architecture:** `GameFlowController` on `GameManager` for panel visibility, pause gate on player input, and scene loads — separate from `ProgressManager` / `GameplayHUD` data paths. Runtime Canvas panels via `OverlayUiBuilder` and `MainMenuController` (placeholder UI until optional Kenney swap).
 
-**Result / follow-up:** Implemented in code (`MainMenuController`, `GameFlowController`, runtime `OverlayUiBuilder`). `MainMenu.unity` + Build Settings index 0. Level01 auto-attaches flow via `GameManager`. Play Mode verification pending — see [SETUP.md](../SETUP.md) section 19.
+**Result / follow-up:** Verified in Play Mode (2026-06-04, `09d678e`). See [SETUP.md](../SETUP.md) section 19 and [TESTLOG.md](../Assets/Documentation/TESTLOG.md).
+
+---
+
+### 2026-05-26 — Reject procedural scene-wide art automation; document incident
+
+**Decision:** Do **not** ship editor menus that bulk-assign generated sprites into `Level01` (or any hand-tuned scene). Kenney or manual per-object swaps only. Level visuals stay **Editor-only** (scene `SpriteRenderer` colors/sprites); gameplay scripts do not override hazard appearance.
+
+**Reason:** A procedural art pass wrote sprite references under `Assets/Resources/Art/`, then those assets were deleted on revert. The scene kept broken GUIDs (Hierarchy intact, Scene view empty). Emergency repair restored visibility with default white squares but **wiped hand-set `SpriteRenderer` colors** and made **KillZone** volumes look like solid white platforms (colliders were still triggers; gameplay feel and level read changed).
+
+**Alternatives considered:** Re-commit generated art (rejected by user); hand-edit entire scene YAML (rejected — fragile GUIDs); only document manual fix (insufficient — added palette restore from last verified baseline commit `09d678e`).
+
+**Process change:** Before any tool that modifies open scenes, deletes asset folders, or runs “apply to all,” state risks explicitly: missing references, lost tints, need for Git/scene backup.
+
+**Result / follow-up:** Art scripts, temporary repair menus, and `GravityFlipSceneSetup` editor menu removed after user recovery (2026-05-26). `KillZone` reverted to respawn + runtime `isTrigger` only. MainMenu/Build Settings are maintained as scene assets in the repo; manual steps in SETUP §19 if recovery is needed.

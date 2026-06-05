@@ -55,7 +55,7 @@ namespace GravityFlip.UI
             if (buildIndex < 0)
             {
                 Debug.LogError(
-                    $"Scene '{levelSceneName}' is not in Build Settings. Use menu: Gravity Flip > Add Scenes To Build Settings.");
+                    $"Scene '{levelSceneName}' is not in Build Settings. Add Assets/Scenes/MainMenu.unity and Level01.unity via File → Build Settings.");
                 return;
             }
 
