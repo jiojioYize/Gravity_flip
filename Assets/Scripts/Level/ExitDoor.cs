@@ -11,6 +11,9 @@ namespace GravityFlip.Level
         [SerializeField] private ProgressManager progressManager;
         [SerializeField] private GameManager gameManager;
         [SerializeField] private SpriteRenderer spriteRenderer;
+        [Header("Locked / open look")]
+        [SerializeField] private Sprite lockedSprite;
+        [SerializeField] private Sprite openSprite;
         [SerializeField] private Color lockedColor = Color.red;
         [SerializeField] private Color openColor = Color.green;
         [SerializeField] private AudioManager audioManager;
@@ -97,10 +100,19 @@ namespace GravityFlip.Level
 
             wasOpen = isOpen;
 
-            if (spriteRenderer != null)
+            if (spriteRenderer == null)
             {
-                spriteRenderer.color = isOpen ? openColor : lockedColor;
+                return;
             }
+
+            if (lockedSprite != null && openSprite != null)
+            {
+                spriteRenderer.sprite = isOpen ? openSprite : lockedSprite;
+                spriteRenderer.color = Color.white;
+                return;
+            }
+
+            spriteRenderer.color = isOpen ? openColor : lockedColor;
         }
     }
 }
