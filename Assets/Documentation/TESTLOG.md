@@ -60,12 +60,13 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-06-04 | Unity Editor Play Mode (`09d678e`) | Game flow UX: MainMenu Start → Level01; Esc pause (Resume, Instructions, Main menu); win panel (Play again, Main menu); updated story and instructions copy; menu button labels readable | Start button and EventSystem issues during setup; pause/win button text clipped until fixed-height menu buttons | `MainMenuController`, `GameFlowController`, `OverlayUiBuilder`; Build Settings; `menuCopyVersion` story migration | Pass |
 | 2026-05-26 | Editor recovery (art pass reverted) | After deleting generated art: Missing sprites; emergency repair menus reset tints; KillZones looked like solid white platforms | Colliders remained triggers; gameplay OK | User restored in Editor; art/repair scripts and hazard tint in code removed | Pass (user confirmed) |
 | 2026-06-04 | Design record (pre-playtest) | Scoped game flow UX (UX-1–3) and quiet death agreed | N/A — planning only | `TECHNICAL_DECISIONS.md`, `SETUP.md` §19 | N/A |
+| 2026-06-07 | Manual sprite swap (Level01) | Kenney 1-Bit Platformer Pack on gameplay objects in `Assets/Tiles/`; backdrop, HUD, runtime flow UI unchanged | N/A — visual polish | Per-object Inspector swap; `ExitDoor` locked/open sprites | Pass (user confirmed) |
 
 ---
 
 ## Known issues (open)
 
-_None blocking the Level01 vertical slice._ Full demo route, game-flow UX, and post–art-incident scene recovery are verified (2026-06-03–04). Optional polish: Kenney sprite swap per object, BGM, standalone build export for submission._
+_None blocking the Level01 vertical slice._ Full demo route, game-flow UX, Kenney gameplay sprites (2026-06-07), and post–art-incident recovery are verified. Optional polish: backdrop, HUD/flow UI art, BGM, standalone build export for submission._
 
 ---
 

@@ -44,7 +44,7 @@ Assets/
   Documentation/    TESTLOG.md
 ```
 
-`Prefabs/` and `Sprites/` are optional — Level01 uses scene objects and built-in square sprites with Inspector colours.
+`Tiles/` holds Kenney *1-Bit Platformer Pack* sprites for Level01 gameplay (see [docs/SPRITE_SOURCING.md](docs/SPRITE_SOURCING.md)). `Prefabs/` is optional. Backdrop/HUD may still use placeholders.
 
 ---
 
@@ -213,8 +213,9 @@ The `Collectible` script sets its collider to trigger at runtime. For **C4 only*
 3. Add `BoxCollider2D`
 4. Add `ExitDoor` script
 5. Assign `Progress Manager`, `Game Manager`, and `Sprite Renderer` references, or leave them empty if there is only one of each in the scene
+6. **Optional art:** On `Exit Door` script, assign **Locked Sprite** (closed door) and **Open Sprite** (open door) from Kenney. When both are set, the script swaps sprites at `4/4` keys; leave empty to use red/green colour tint on one sprite instead
 
-The door starts locked, changes colour when all collectables are collected, and calls `GameManager.CompleteLevel()` when the player reaches it.
+The door starts locked, opens visually when all collectables are collected, and calls `GameManager.CompleteLevel()` when the player reaches it.
 
 ### Kill zone
 

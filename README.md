@@ -17,7 +17,8 @@ A 2D puzzle platformer where you flip your character's gravity — not the world
 | Audio and polish | Done — Kenney CC0 SFX, flip flash (`docs/AUDIO_SOURCING.md`) |
 | Camera and framing | Done — `CameraFollow2D`, bounds, `LevelBackdrop2D` |
 | Game flow UI (UX-1–3) | Done — `MainMenu`, Esc pause/instructions, win panel; quiet death (2026-06-04) |
-| Level visuals | Editor placeholders + hand-tuned colours; optional Kenney swap per object |
+| Level gameplay sprites | Done — Kenney *1-Bit Platformer Pack* in `Assets/Tiles/` (see [SPRITE_SOURCING.md](docs/SPRITE_SOURCING.md)) |
+| Level backdrop / HUD / flow UI art | Placeholders — optional Kenney UI or background swap |
 | Playable build export | Build Settings ready (`MainMenu` → `Level01`); standalone export when required for submission |
 
 ---
@@ -68,6 +69,7 @@ docs/
   GAME_CONCEPT.md   Design and scope
   TECHNICAL_DECISIONS.md
   AUDIO_SOURCING.md
+  SPRITE_SOURCING.md
 SETUP.md            Unity Editor setup and verification checklists
 ```
 
@@ -95,7 +97,7 @@ Playtest notes: [Assets/Documentation/TESTLOG.md](Assets/Documentation/TESTLOG.m
 
 **Audio:** Sound effects from [Kenney](https://kenney.nl/) (CC0): RPG Audio, Music Jingles, Digital Audio. Per-file list: [docs/AUDIO_SOURCING.md](docs/AUDIO_SOURCING.md).
 
-**Sprites:** Placeholder Unity squares with hand-tuned colours in `Level01`; optional Kenney 2D art via manual per-object swap in the Editor (see [SETUP.md](SETUP.md)).
+**Sprites:** [Kenney *1-Bit Platformer Pack*](https://kenney.nl/assets/1-bit-platformer-pack) (CC0) — gameplay tiles in `Assets/Tiles/`; per-object mapping in [docs/SPRITE_SOURCING.md](docs/SPRITE_SOURCING.md). Backdrop, HUD, and runtime menu UI still placeholders.
 
 ---
 

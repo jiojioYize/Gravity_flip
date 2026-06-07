@@ -89,7 +89,7 @@ flowchart LR
 | B | Multiple collectables with distinct flip paths | Done — four keys, Level01 Section 11 (verified 2026-06-03) |
 | C | BGM | Pending (optional) |
 | C | SFX + flip screen flash | Done |
-| D | Kenney art pass for platforms / hazards | Optional — manual per-object swap in Editor |
+| D | Kenney art pass for platforms / hazards | Done — *1-Bit Platformer Pack* on Level01 gameplay objects (`docs/SPRITE_SOURCING.md`); backdrop/HUD/flow UI optional |
 
 ### Game flow (scoped stretch — approved 2026-06-03)
 
@@ -133,7 +133,7 @@ See [SETUP.md](../SETUP.md) section 19 and [TECHNICAL_DECISIONS.md](TECHNICAL_DE
 
 | Type | Plan | License / credit |
 |------|------|------------------|
-| Sprites | Placeholder coloured quads initially; optional Kenney.nl platformer pack | CC0 / credit in README |
+| Sprites | Kenney *1-Bit Platformer Pack* for Level01 gameplay (`Assets/Tiles/`); backdrop/HUD optional | CC0 / [SPRITE_SOURCING.md](SPRITE_SOURCING.md) |
 | SFX | Kenney impact & UI packs or similar | CC0 / credit in README |
 | BGM | Optional loop from free library | Credit in README before submission |
 
