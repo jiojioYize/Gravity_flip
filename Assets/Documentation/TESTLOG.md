@@ -27,6 +27,8 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-05-26 | Unity Editor Play Mode (`2f240ea`) | Level01 layout: collectable unreachable from ground-only path; reachable via ceiling route after gravity flip | No issues reported during manual verification | No code change required | Pass |
 | 2026-05-26 | Editor scripts only | Added `GameplayHUD` for progress, gravity direction, and control hints | Not yet tested in Unity Play Mode because canvas binding is required | Documented canvas setup in `SETUP.md` section 5 | Pending Play Mode test |
 | 2026-05-26 | Unity Editor Play Mode | HUD progress, gravity label, control hints; updates on collect, flip, and kill-zone respawn | No issues reported during manual verification | No code change required | Pass |
+| 2026-05-26 | Unity Editor Play Mode | `StatusPanel` HUD: Progress/Gravity in Game view after Play | Inspector local pos looked correct; Game view clipped text off-screen; `ControlsText` OK | Stale play-mode scales on panel children; child `anchoredPosition` used positive Y (up) and negative X from old canvas-relative layout; reset child pos to `(0,0)` / `(0,-32)`, scales to 1; `HudScreenAnchor` applies in `Start` after canvas layout | Pass |
+| 2026-05-26 | Unity Editor Play Mode | Full Level01 acceptance (`SETUP.md` §11.14): demo route, HUD, Kenney sprites, backdrop, shuttle P1–P4, kill/`R` reset, game-flow UX | No issues reported | N/A | Pass |
 | 2026-05-26 | Editor scripts only | Added `AudioManager`, `FlipScreenFlash`, and `R` level reset; wired SFX hooks to jump, flip, collect, death, door, and win | Not yet tested in Unity Play Mode; audio clips must be assigned in Inspector | Documented setup in `SETUP.md` section 8 | Pending Play Mode test |
 | 2026-05-26 | Unity Editor Play Mode | SFX (jump, flip, collect, death, door unlock, level complete, level reset), flip screen flash, and `R` level reset | No issues reported during manual verification | No code change required | Pass |
 | 2026-05-26 | Editor scripts only | P1 shuttle platform: `MovingPlatform2D`, `ShuttlePlatformController`, `PlatformCorridorExitTrigger`; player detach on reset | Not yet tested in Unity Play Mode — scene objects and Inspector binding required | Documented setup in `SETUP.md` section 9 | Pending Play Mode test |
@@ -60,13 +62,14 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-06-04 | Unity Editor Play Mode (`09d678e`) | Game flow UX: MainMenu Start → Level01; Esc pause (Resume, Instructions, Main menu); win panel (Play again, Main menu); updated story and instructions copy; menu button labels readable | Start button and EventSystem issues during setup; pause/win button text clipped until fixed-height menu buttons | `MainMenuController`, `GameFlowController`, `OverlayUiBuilder`; Build Settings; `menuCopyVersion` story migration | Pass |
 | 2026-05-26 | Editor recovery (art pass reverted) | After deleting generated art: Missing sprites; emergency repair menus reset tints; KillZones looked like solid white platforms | Colliders remained triggers; gameplay OK | User restored in Editor; art/repair scripts and hazard tint in code removed | Pass (user confirmed) |
 | 2026-06-04 | Design record (pre-playtest) | Scoped game flow UX (UX-1–3) and quiet death agreed | N/A — planning only | `TECHNICAL_DECISIONS.md`, `SETUP.md` §19 | N/A |
-| 2026-06-07 | Manual sprite swap (Level01) | Kenney 1-Bit Platformer Pack on gameplay objects in `Assets/Tiles/`; backdrop, HUD, runtime flow UI unchanged | N/A — visual polish | Per-object Inspector swap; `ExitDoor` locked/open sprites | Pass (user confirmed) |
+| 2026-06-07 | Manual sprite swap (Level01) | Kenney 1-Bit Platformer Pack on gameplay objects in `Assets/Tiles/`; HUD layout via `StatusPanel`; runtime flow UI unchanged | N/A — visual polish | Per-object Inspector swap; `ExitDoor` locked/open sprites | Pass (user confirmed) |
+| 2026-06-08 | Level backdrop art | `tile_0000` → `Background.png` on `LevelBackdrop` | N/A | `LevelBackdrop2D` bounds + Sprite Renderer colour in Editor | Pass (user confirmed) |
 
 ---
 
 ## Known issues (open)
 
-_None blocking the Level01 vertical slice._ Full demo route, game-flow UX, Kenney gameplay sprites (2026-06-07), and post–art-incident recovery are verified. Optional polish: backdrop, HUD/flow UI art, BGM, standalone build export for submission._
+_None blocking the Level01 vertical slice._ Full demo route, `StatusPanel` HUD layout, game-flow UX, Kenney gameplay sprites and backdrop, and post–art-incident recovery are verified (2026-05-26 full acceptance). Optional polish: HUD panel sprites, runtime flow UI art, BGM, standalone build export for submission._
 
 ---
 
@@ -84,5 +87,7 @@ _Use this section for quick reference when writing the report._
 - P3 Collectable 3 and pit hazard passed manual Unity Editor verification (2026-06-01): split ground gap, pit kill zone, jump-from-shuttle route, unified collect/death SFX, progress toward corridor.
 - Level backdrop and camera framing passed manual Unity Editor verification (2026-06-03): `LevelBackdrop2D` Min/Max tuning; camera background matched; left gap resolved by extending **Min X**.
 - HUD screen-space layout passed manual Unity Editor verification (2026-06-03): `HudScreenAnchor` on Overlay canvas; labels stay fixed while camera scrolls.
+- `StatusPanel` stacked HUD (progress + gravity) passed manual Unity Editor verification (2026-05-26): Game view shows both labels at top-left; child local positions `(0,0)` / `(0,-32)`; no play-mode scale bleed.
+- Full Level01 vertical-slice acceptance passed manual Unity Editor verification (2026-05-26): C1→C2→C3→C4→door, hazards, shuttle platform, kill/`R` reset, HUD, audio/flash, and game-flow UX.
 - Level01 end caps, camera bounds, and full demo-route playthrough passed manual Unity Editor verification (2026-06-03).
 - Game flow UX passed manual Unity Editor verification (2026-06-04, `09d678e`): MainMenu, Esc pause/instructions, win panel, updated copy; quiet death unchanged. See **Entries** table.

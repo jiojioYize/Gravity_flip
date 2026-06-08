@@ -34,17 +34,21 @@ Alternatively use a single `Walkable` layer for ground + ceiling if ground check
 
 ```
 Assets/
-  Scenes/           MainMenu.unity, Level01.unity
-  Scripts/Core/     GravityController, CameraFollow2D, LevelBackdrop2D, GameManager, ProgressManager
-  Scripts/Player/   PlayerController2D, PlatformRider2D
-  Scripts/Level/    Collectible, PlatformBoundCollectible, ExitDoor, KillZone, MovingPlatform2D, …
-  Scripts/UI/       GameplayHUD, MainMenuController, GameFlowController, OverlayUiBuilder, …
-  Scripts/Audio/    AudioManager
-  Audio/            Kenney CC0 clips (.ogg)
-  Documentation/    TESTLOG.md
+  Scenes/              MainMenu.unity, Level01.unity
+  Scripts/
+    Core/              GravityController, CameraFollow2D, LevelBackdrop2D, GameManager, ProgressManager
+    Player/            PlayerController2D, PlatformRider2D
+    Level/             Collectible, PlatformBoundCollectible, ExitDoor, KillZone, MovingPlatform2D, …
+    UI/                GameplayHUD, MainMenuController, GameFlowController, OverlayUiBuilder, …
+    Audio/             AudioManager
+  Tiles/               Kenney 1-bit gameplay sprites (PNG + .meta)
+  Audio/               Kenney CC0 clips (.ogg)
+  Documentation/       TESTLOG.md
+docs/                  GAME_CONCEPT, TECHNICAL_DECISIONS, AUDIO_SOURCING, SPRITE_SOURCING
+ProjectSettings/       Editor build settings, input, Physics 2D, tags/layers
 ```
 
-`Tiles/` holds Kenney *1-Bit Platformer Pack* sprites for Level01 gameplay (see [docs/SPRITE_SOURCING.md](docs/SPRITE_SOURCING.md)). `Prefabs/` is optional. Backdrop/HUD may still use placeholders.
+`Tiles/` maps Kenney *1-Bit Platformer Pack* tiles to Level01 objects — see [docs/SPRITE_SOURCING.md](docs/SPRITE_SOURCING.md). `Prefabs/` is optional (not used in the current slice). Backdrop, HUD panels, and runtime menu/pause/win UI may still use placeholders.
 
 ---
 
@@ -660,7 +664,7 @@ Log results in [Assets/Documentation/TESTLOG.md](Assets/Documentation/TESTLOG.md
 
 ### A. Level backdrop (recommended)
 
-1. `2D Object > Sprites > Square` → rename **`LevelBackdrop`**
+1. Create **`LevelBackdrop`** with **Sprite Renderer** (placeholder square or `Assets/Tiles/Background.png` from Kenney `tile_0000`)
 2. Move it to the **bottom** of `Hierarchy` (drawn behind gameplay)
 3. **Add Component** → `LevelBackdrop2D`
 4. Set **Sorting Order** `-100` on the `Sprite Renderer` (script also applies this)
@@ -672,9 +676,10 @@ Log results in [Assets/Documentation/TESTLOG.md](Assets/Documentation/TESTLOG.md
 | Max X | 24 | Past exit |
 | Min Y | -12 | Below floor art |
 | Max Y | 7 | Above ceiling art |
-| Backdrop Color | dark grey-blue | Match or darken **Main Camera** background |
 
-6. **Main Camera** → **Background** colour: same family as backdrop (hides letterboxing if a sliver still shows)
+6. **Sprite Renderer → Sprite** = `Background.png`; tint via **Color** if needed (Editor-only, not set by script). See [docs/SPRITE_SOURCING.md](docs/SPRITE_SOURCING.md)
+
+7. **Main Camera** → **Background** colour: same family as backdrop (hides letterboxing if a sliver still shows)
 
 No collider on the backdrop — visual only.
 
@@ -725,6 +730,18 @@ Your gameplay HUD (keys, gravity, controls) should always use **Overlay**.
 3. Each HUD element: **`HudScreenAnchor`** or manual anchors to **corners / bottom center**, not world positions
 4. Do **not** parent `Canvas` under `Player` or `Main Camera`
 5. Play Mode: move to level left/right — text stays in the same **screen** corners
+
+### StatusPanel stack (progress + gravity, top-left)
+
+If both labels share one parent panel:
+
+1. **`StatusPanel`** — child of `Canvas`; **`HudScreenAnchor`** → `Top Left`, margin e.g. `(48, 56)`; **Scale** `(1, 1, 1)`; optional **Width/Height** ~`200×70`
+2. **`ProgressText`** / **`GravityText`** — children of `StatusPanel`; **no** `HudScreenAnchor` on the text objects
+3. On each text **Rect Transform**: Anchor **top-left**, Pivot **top-left**, **Scale** `(1, 1, 1)`
+4. **Local Pos**: `ProgressText` `(0, 0)`; `GravityText` `(0, -32)` (negative Y = next line **down**)
+5. Do **not** save the scene while in Play Mode — Unity can bake wrong local scales (e.g. `1.04` / `0.96`) onto panel children and push them off-screen in Game view even when Inspector numbers look fine
+
+`ControlsText` often avoids this because it stays a direct `Canvas` child with manually set anchors.
 
 ### Recommended hierarchy (art-ready)
 

@@ -13,7 +13,6 @@ namespace GravityFlip.Core
         [SerializeField] private float maxX = 22f;
         [SerializeField] private float minY = -12f;
         [SerializeField] private float maxY = 7f;
-        [SerializeField] private Color backdropColor = new Color(0.08f, 0.1f, 0.14f, 1f);
         [SerializeField] private int sortingOrder = -100;
         [SerializeField] private float depthZ = 5f;
 
@@ -54,7 +53,6 @@ namespace GravityFlip.Core
                 (minY + maxY) * 0.5f,
                 depthZ);
             transform.localScale = new Vector3(width, height, 1f);
-            backdropRenderer.color = backdropColor;
             backdropRenderer.sortingOrder = sortingOrder;
         }
     }

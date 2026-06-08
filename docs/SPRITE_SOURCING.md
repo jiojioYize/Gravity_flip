@@ -2,7 +2,7 @@
 
 This document records where Level01 gameplay sprites come from, how they map to scene objects, and the license terms. It supports the module requirements for legal/ethical use of assets and README credits.
 
-**Gameplay sprites in `Assets/Tiles/` are from Kenney *1-Bit Platformer Pack* (CC0).** Background, HUD panels, and runtime-built menu/pause/win UI still use placeholders until swapped manually.
+**Sprites in `Assets/Tiles/` are from Kenney *1-Bit Platformer Pack* (CC0).** Level01 gameplay, hazards, door, and `LevelBackdrop` are swapped. HUD panels and runtime-built menu/pause/win UI may still use text-only placeholders.
 
 ---
 
@@ -31,6 +31,11 @@ Imported PNGs are stored under `Assets/Tiles/` with readable names. Each file wa
 | `tile_0033` | `KillZone.png` | `KillZone` (level-bottom hazard) |
 | `tile_0105` | `KillZone_C3Pit.png` | `KillZone_C3Pit` |
 | `tile_0166` | `KillZone_Corridor.png` | `KillZone_CorridorFloor`, `KillZone_CorridorCeiling` |
+| `tile_0000` | `Background.png` | `LevelBackdrop` (`LevelBackdrop2D` scales to Min/Max bounds) |
+
+### Level backdrop
+
+`LevelBackdrop` uses **`Background.png`** on **Sprite Renderer**. Tint via **Sprite Renderer → Color** (Editor-only; `LevelBackdrop2D` does not override colour). Tune **Min X / Max X / Min Y / Max Y** on `LevelBackdrop2D` so the image covers the play band. Match **Main Camera → Background** to the same family if letterboxing shows at the edges.
 
 ### Hazard visuals
 
@@ -50,7 +55,6 @@ When **Locked Sprite** and **Open Sprite** are both assigned on `ExitDoor`, the 
 
 | Area | Current state | Notes |
 |------|---------------|-------|
-| `LevelBackdrop` | Editor placeholder / colour | Optional pack background or solid tint |
 | HUD (`Canvas` panels) | Text + optional panel colour | See `SETUP.md` §18; Kenney UI Pack optional |
 | Main menu / pause / win UI | Runtime-built in `MainMenuController`, `OverlayUiBuilder` | Code-driven; swap requires script or sprite hooks |
 

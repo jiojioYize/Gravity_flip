@@ -20,7 +20,7 @@ namespace GravityFlip.UI
         [SerializeField] private Vector2 margin = new Vector2(24f, 24f);
         [SerializeField] private bool applyOnAwake = true;
 
-        private void Awake()
+        private void Start()
         {
             if (applyOnAwake)
             {
@@ -35,6 +35,9 @@ namespace GravityFlip.UI
             {
                 return;
             }
+
+            // Canvas Scaler updates the root scale in Awake; wait until layout is ready.
+            Canvas.ForceUpdateCanvases();
 
             switch (preset)
             {
