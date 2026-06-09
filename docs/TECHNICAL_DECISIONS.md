@@ -208,13 +208,51 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 
 ---
 
-### HUD screen-space lock and art-ready panels
+### 2026-06-03 — HUD screen-space lock and art-ready panels
 
-**Decision:** Keep HUD on **Screen Space - Overlay** with corner/bottom **`HudScreenAnchor`** (or equivalent RectTransform anchors). Optional **`HudPanel`** wrapper (Image + Text) per block so UI sprites swap without touching `GameplayHUD` logic.
+**Decision:** Keep HUD on **Screen Space - Overlay** with corner/bottom **`HudScreenAnchor`** (or equivalent RectTransform anchors). Optional panel wrapper (Image + Text) per block so UI sprites swap without touching `GameplayHUD` logic.
 
 **Reason:** World camera scroll and vertical framing must not move gameplay hints; Overlay UI is independent of `CameraFollow2D`. Panel wrapper separates data (`GameplayHUD` strings) from presentation (sprites).
 
 **Alternatives considered:** World Space HUD parented to player (rejected); Screen Space - Camera (rejected for this project); immediate TextMeshPro migration (deferred).
+
+**Result / follow-up:** Verified in Play Mode (2026-06-03). `StatusPanel` stack and layout fix documented in the 2026-05-26 entry below. See [SETUP.md](../SETUP.md) sections 5 and 18.
+
+---
+
+### 2026-06-03 — UI reference resolution 600×700
+
+**Decision:** Use **Canvas Scaler → Scale With Screen Size** with reference resolution **600×700** and **Match 0.5** on `Level01` gameplay HUD and on runtime flow UI created by `OverlayUiBuilder` (main menu, pause, instructions, win panels).
+
+**Reason:** One reference size keeps margins and font tuning consistent between scene HUD and code-built overlays. The value matches the Game view proportions used during Level01 layout and playtesting; `Scale With Screen Size` still adapts to the actual display at runtime.
+
+**Alternatives considered:** `1920×1080` (common PC default — rejected for this slice because HUD margins were tuned at 600×700); constant pixel scale (rejected — poor fit across aspect ratios).
+
+**Result / follow-up:** Documented in [SETUP.md](../SETUP.md) sections 5 and 18. No change required while full acceptance passes on target Game view sizes.
+
+---
+
+### 2026-06-08 — Kenney backdrop sprite; editor-only backdrop tint
+
+**Decision:** Assign Kenney `tile_0000` as `Assets/Tiles/Background.png` on `LevelBackdrop` (`LevelBackdrop2D` bounds scaling). Remove script-driven `backdropColor` from `LevelBackdrop2D` — backdrop tint is **Editor-only** via **Sprite Renderer → Color**.
+
+**Reason:** Art pass should not overwrite hand-tuned scene colours on rebuild/play. Separating bounds scaling (script) from palette (Inspector) matches the project rule that level visuals are Editor-owned after the 2026-05-26 art-incident recovery.
+
+**Alternatives considered:** Procedural full-scene colour restore (rejected); script-set colour every `OnValidate` (rejected — fights manual Kenney tint).
+
+**Result / follow-up:** Verified in Play Mode (2026-06-08). Mapping in [SPRITE_SOURCING.md](SPRITE_SOURCING.md); setup in [SETUP.md](../SETUP.md) section 17.
+
+---
+
+### 2026-05-26 — `StatusPanel` stacked HUD layout
+
+**Decision:** Group **ProgressText** and **GravityText** under a **`StatusPanel`** child of `Canvas`. Apply **`HudScreenAnchor` (Top Left)** only on the panel (margin e.g. `(48, 56)`). Child text uses top-left anchor/pivot with local positions **`(0, 0)`** and **`(0, -32)`** — no `HudScreenAnchor` on the text objects. Apply anchors in **`HudScreenAnchor.Start()`** after **`Canvas.ForceUpdateCanvases()`**. Do not save the scene in Play Mode (avoids baked child scales).
+
+**Reason:** Play Mode testing showed progress/gravity labels clipped in Game view when children kept stale canvas-relative offsets and non-`(1,1,1)` scales from an earlier hierarchy. `ControlsText` worked as a direct `Canvas` child with manual anchors; the panel stack needed explicit child-local layout rules.
+
+**Alternatives considered:** Separate `HudScreenAnchor` per text with different margins (works but duplicates margin tuning); World Space HUD (rejected).
+
+**Result / follow-up:** Verified in Play Mode (2026-05-26 full acceptance). See [TESTLOG.md](../Assets/Documentation/TESTLOG.md) and [SETUP.md](../SETUP.md) §18 StatusPanel stack.
 
 ---
 

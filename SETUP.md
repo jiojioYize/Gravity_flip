@@ -119,7 +119,7 @@ HUD must stay **fixed on the screen** while the world camera scrolls. Use **Scre
 3. Select `Canvas`; in `Inspector`:
    - **Render Mode** = `Screen Space - Overlay`
    - **Canvas Scaler → UI Scale Mode** = `Scale With Screen Size`
-   - **Reference Resolution** = `1920 x 1080` (or your target)
+   - **Reference Resolution** = `600 x 700` (matches `Level01` Canvas and `OverlayUiBuilder` runtime UI)
    - **Match** = `0.5` (balance width/height)
 4. Optional: create empty child **`HudRoot`** under `Canvas` (organises panels only)
 
@@ -609,8 +609,8 @@ Before marking Level01 “playable”, confirm:
 
 For the HUD milestone, verify:
 
-- [ ] Progress shows `Keys 0/1` at start (or `0/0` briefly until collectables register, then `0/1`)
-- [ ] Progress becomes `Keys 1/1` after collecting
+- [ ] Progress shows `Keys 0/4` at start (or `0/0` briefly until collectables register, then `0/4`)
+- [ ] Progress becomes `Keys 4/4` after collecting all keys
 - [ ] Gravity text shows `Gravity: Down` at start and after respawn
 - [ ] Gravity text shows `Gravity: Up` after flipping
 - [ ] Control hints stay visible at the bottom
@@ -726,7 +726,7 @@ Your gameplay HUD (keys, gravity, controls) should always use **Overlay**.
 ### Fix checklist (if text “runs away”)
 
 1. **Canvas → Render Mode** = `Screen Space - Overlay`
-2. **Canvas Scaler** = `Scale With Screen Size`, reference `1920×1080`, Match `0.5`
+2. **Canvas Scaler** = `Scale With Screen Size`, reference `600×700`, Match `0.5` (same as `OverlayUiBuilder` for menu/pause/win)
 3. Each HUD element: **`HudScreenAnchor`** or manual anchors to **corners / bottom center**, not world positions
 4. Do **not** parent `Canvas` under `Player` or `Main Camera`
 5. Play Mode: move to level left/right — text stays in the same **screen** corners

@@ -1,6 +1,6 @@
 # Gravity Flip — Game Concept and Design
 
-> Module: Game Programming · Document version: 1.1 (Level01 layout approved)  
+> Module: Game Programming · Document version: 1.2 (Level01 vertical slice complete)  
 > Repository: [Gravity_flip](https://github.com/jiojioYize/Gravity_flip)
 
 This document supports the **Game Concept and Design (20%)** assessment and serves as the design reference for development. It will be expanded into the formal module submission (Word/PDF) as required.
@@ -9,9 +9,9 @@ This document supports the **Game Concept and Design (20%)** assessment and serv
 
 ## 1. Game idea
 
-**Gravity Flip** is a 2D side-scrolling puzzle platformer built around one core mechanic: the player can instantly invert the direction of gravity acting on their character. The level geometry stays fixed — platforms, walls, and collectibles do not move or rotate. Only the character’s force direction and visual orientation change.
+**Gravity Flip** is a 2D side-scrolling platformer built around one core mechanic: the player can freely invert the direction of gravity acting on their character. Level layouts stay fixed; the character’s force direction and visual orientation change on flip.
 
-The intended feeling is spatial novelty (“I am walking upside-down on the ceiling, but the room still looks the same”) combined with short puzzles where flipping gravity is the only way to reach a goal.
+The intended feeling is spatial novelty (walking on the ceiling after a flip) combined with short level challenges where changing gravity opens routes that normal jumping cannot reach.
 
 ---
 
@@ -36,7 +36,7 @@ The intended feeling is spatial novelty (“I am walking upside-down on the ceil
 4. **While inverted** — Left/right still map to screen left/right; jump direction follows current “up”.
 5. **Win condition** — At least one action/collect that **requires** a gravity flip; exit locked until complete.
 6. **Failure** — At least one hazard (e.g. pit, spikes); death resets position, normal gravity, and progress.
-7. **HUD** — Gravity direction indicator, progress counter (e.g. `0/1`), control hints.
+7. **HUD** — Gravity direction indicator, progress counter (e.g. `Keys 0/4`), control hints.
 8. **Feedback** — Simple SFX for jump, flip, collect, fail; visible flip on character sprite.
 9. **Stability** — No tunneling through colliders; no soft-locks.
 
@@ -78,7 +78,7 @@ flowchart LR
 - **Four collectables** (`Keys 0/4`), each teaching a distinct use of gravity flip and/or the shuttle platform
 - **Shuttle platform** — spawns left, moves right only, despawns after fully exiting the final hazard corridor; respawns at left for a new **run** (see Section 11)
 - All baseline requirements in Section 3 (HUD, SFX, flip feedback, hazards, `R` reset implemented)
-- Placeholder or royalty-free 2D art; SFX documented in [AUDIO_SOURCING.md](AUDIO_SOURCING.md)
+- Kenney CC0 2D art for Level01 gameplay and backdrop (`docs/SPRITE_SOURCING.md`); SFX in [AUDIO_SOURCING.md](AUDIO_SOURCING.md)
 
 ### Stretch goals (after baseline, pick by value)
 
@@ -86,7 +86,7 @@ flowchart LR
 |----------|---------|--------|
 | A | Main menu, Esc pause, win panel (scoped UX-1–3) | Done (verified 2026-06-04) |
 | A | `R` to reset level | Done |
-| B | Multiple collectables with distinct flip paths | Done — four keys, Level01 Section 11 (verified 2026-06-03) |
+| B | Multiple collectables with distinct flip paths | Done — four keys, Level01 Section 11 (full acceptance 2026-05-26) |
 | C | BGM | Pending (optional) |
 | C | SFX + flip screen flash | Done |
 | D | Kenney art pass for platforms / hazards | Done — *1-Bit Platformer Pack* on Level01 gameplay + `LevelBackdrop` (`docs/SPRITE_SOURCING.md`); HUD/flow UI optional |
@@ -125,6 +125,7 @@ See [SETUP.md](../SETUP.md) section 19 and [TECHNICAL_DECISIONS.md](TECHNICAL_DE
 | Physics | 2D — `Rigidbody2D`, `Physics2D` |
 | Input | Legacy Input Manager (Shift / Space / AD) |
 | Version control | GitHub — steady commits, README, this document, TESTLOG |
+| UI scale | Canvas Scaler `600×700`, Match `0.5` — `Level01` HUD + `OverlayUiBuilder` flow UI |
 | IDE assistance | Cursor (local `.cursor/rules/` only; not pushed to remote) |
 
 ---
@@ -355,3 +356,4 @@ Editor setup steps will be added to [SETUP.md](../SETUP.md) as each phase is imp
 |---------|------|-------|
 | 1.0 | Planning phase | Initial concept from requirements doc; pre-implementation |
 | 1.1 | 2026-05-26 | Added approved Level01 layout (four collectables, shuttle platform, C4 spatial irreversibility) |
+| 1.2 | 2026-05-26 | Vertical slice complete; genre wording aligned to platformer; HUD/canvas notes synced with SETUP |

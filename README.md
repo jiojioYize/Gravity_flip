@@ -1,6 +1,6 @@
 # Gravity Flip
 
-A 2D puzzle platformer where you flip your character's gravity — not the world. Reach collectables and the exit by walking on floors *and* ceilings.
+A 2D platformer where you freely flip your own gravity to dodge danger zones, collect keys, and reach the exit.
 
 **Full design document:** [docs/GAME_CONCEPT.md](docs/GAME_CONCEPT.md)
 
@@ -12,7 +12,7 @@ A 2D puzzle platformer where you flip your character's gravity — not the world
 |------|--------|
 | Unity project (2022.3 LTS) | Done |
 | Core gameplay scripts | Done — gravity, movement, jump, level loop, hazards, `R` reset |
-| Level01 vertical slice (P1–P4) | Done — C1→C4→door verified (2026-06-03). See [GAME_CONCEPT.md](docs/GAME_CONCEPT.md) §11.14 |
+| Level01 vertical slice (P1–P4) | Done — full acceptance 2026-05-26 (C1→C4→door, §11.14). See [GAME_CONCEPT.md](docs/GAME_CONCEPT.md) |
 | HUD | Done — progress, gravity direction, control hints (screen-space overlay) |
 | Audio and polish | Done — Kenney CC0 SFX, flip flash (`docs/AUDIO_SOURCING.md`) |
 | Camera and framing | Done — `CameraFollow2D`, bounds, `LevelBackdrop2D` |
