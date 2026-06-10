@@ -244,6 +244,18 @@ Update this document when a decision affects gameplay, architecture, testing, sc
 
 ---
 
+### 2026-06-09 — Final build uses 1920×900 windowed presentation
+
+**Decision:** Export the final Windows Standalone build as a **windowed 1920×900** build instead of native fullscreen or a small 600×700 window.
+
+**Reason:** Native/default fullscreen displayed too much horizontal space and made the authored Level01 composition feel wrong. The earlier 600×700 window preserved the UI scale but felt too small and narrow for players. A 1920×900 window keeps the wide final composition readable while avoiding monitor-dependent fullscreen stretching.
+
+**Alternatives considered:** Native fullscreen 16:9 (rejected after build preview); 600×700 or 900×1050 windowed builds (rejected after testing because they did not present the final level comfortably); camera letterboxing/aspect-lock scripts (rejected after preview because the result was too narrow).
+
+**Result / follow-up:** User-confirmed Windows build test passed on 2026-06-09. Documented in [SETUP.md](../SETUP.md) and [TESTLOG.md](../Assets/Documentation/TESTLOG.md).
+
+---
+
 ### 2026-05-26 — `StatusPanel` stacked HUD layout
 
 **Decision:** Group **ProgressText** and **GravityText** under a **`StatusPanel`** child of `Canvas`. Apply **`HudScreenAnchor` (Top Left)** only on the panel (margin e.g. `(48, 56)`). Child text uses top-left anchor/pivot with local positions **`(0, 0)`** and **`(0, -32)`** — no `HudScreenAnchor` on the text objects. Apply anchors in **`HudScreenAnchor.Start()`** after **`Canvas.ForceUpdateCanvases()`**. Do not save the scene in Play Mode (avoids baked child scales).

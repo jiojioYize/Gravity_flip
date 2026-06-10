@@ -592,6 +592,14 @@ Scenes in build (repo default):
 
 To confirm in Editor: **File → Build Settings**. Platform: PC, Mac & Linux Standalone (or as module requires).
 
+Final submission build presentation:
+
+- **Player Settings → Resolution and Presentation**
+  - Fullscreen Mode: `Windowed`
+  - Default Screen Width: `1920`
+  - Default Screen Height: `900`
+- This wider window matches the final verified Level01 composition better than native 16:9 fullscreen or the earlier small `600×700` test window.
+
 Document build output path in README when first build is exported.
 
 ---

@@ -126,6 +126,7 @@ See [SETUP.md](../SETUP.md) section 19 and [TECHNICAL_DECISIONS.md](TECHNICAL_DE
 | Input | Legacy Input Manager (Shift / Space / AD) |
 | Version control | GitHub — steady commits, README, this document, TESTLOG |
 | UI scale | Canvas Scaler `600×700`, Match `0.5` — `Level01` HUD + `OverlayUiBuilder` flow UI |
+| Final build presentation | Windows Standalone, `1920×900` windowed |
 | IDE assistance | Cursor (local `.cursor/rules/` only; not pushed to remote) |
 
 ---

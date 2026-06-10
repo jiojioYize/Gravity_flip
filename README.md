@@ -20,7 +20,7 @@ A 2D platformer where you freely flip your own gravity to dodge danger zones, co
 | Level gameplay sprites | Done — Kenney *1-Bit Platformer Pack* in `Assets/Tiles/` (see [SPRITE_SOURCING.md](docs/SPRITE_SOURCING.md)) |
 | Level backdrop | Done — `tile_0000` → `Assets/Tiles/Background.png` on `LevelBackdrop` |
 | HUD / flow UI art | Text HUD tuned; optional Kenney UI panels; runtime menu/pause/win UI |
-| Playable build export | Build Settings ready (`MainMenu` → `Level01`); standalone export when required for submission |
+| Playable build export | Windows Standalone ready — `1920×900` windowed build, `MainMenu` → `Level01` |
 
 ---
 

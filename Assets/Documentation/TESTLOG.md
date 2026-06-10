@@ -64,12 +64,13 @@ Record playtests here. The final report will reference this file for testing and
 | 2026-06-04 | Design record (pre-playtest) | Scoped game flow UX (UX-1–3) and quiet death agreed | N/A — planning only | `TECHNICAL_DECISIONS.md`, `SETUP.md` §19 | N/A |
 | 2026-06-07 | Manual sprite swap (Level01) | Kenney 1-Bit Platformer Pack on gameplay objects in `Assets/Tiles/`; HUD layout via `StatusPanel`; runtime flow UI unchanged | N/A — visual polish | Per-object Inspector swap; `ExitDoor` locked/open sprites | Pass (user confirmed) |
 | 2026-06-08 | Level backdrop art | `tile_0000` → `Background.png` on `LevelBackdrop` | N/A | `LevelBackdrop2D` bounds + Sprite Renderer colour in Editor | Pass (user confirmed) |
+| 2026-06-09 | Windows Standalone build | Final build presentation at `1920×900` windowed: MainMenu → Level01; Level01 view, HUD, and route readability | Native/default fullscreen aspect showed an unsuitable stretched/wide composition; small `600×700` window also felt poor | Player Settings set to `1920×900` Windowed for the exported build | Pass (user confirmed) |
 
 ---
 
 ## Known issues (open)
 
-_None blocking the Level01 vertical slice._ Full demo route, `StatusPanel` HUD layout, game-flow UX, Kenney gameplay sprites and backdrop, and post–art-incident recovery are verified (2026-05-26 full acceptance). Optional polish: HUD panel sprites, runtime flow UI art, BGM, standalone build export for submission._
+_None blocking the Level01 vertical slice._ Full demo route, `StatusPanel` HUD layout, game-flow UX, Kenney gameplay sprites and backdrop, post–art-incident recovery, and the `1920×900` Windows Standalone build presentation are verified. Optional polish: HUD panel sprites, runtime flow UI art, BGM._
 
 ---
 
